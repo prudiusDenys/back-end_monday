@@ -5,7 +5,7 @@ import cors from 'cors'
 const app = express()
 app.use(cors())
 const jsonParser = bodyParser.json()
-const port = 3000
+const port = process.env.PORT || 3000
 
 let videos = [
   {id: 1, title: 'About JS - 01', author: 'it-incubator.eu'},
