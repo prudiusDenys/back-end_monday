@@ -76,21 +76,25 @@ app.put('/videos/:id', (req: Request, res: Response) => {
   const id = +req.params.id
   const title = req.body.title
   const foundVideo = videos.find(video => video.id === id);
+
   if (title && title.length <= 40 && foundVideo) {
     foundVideo.title = title
     res.sendStatus(204)
     return
   }
+  if (!foundVideo) {
+    res.sendStatus(404);
+    return;
+  }
   const errorMessage = {
     "errorsMessages": [
       {
         "message": "id is incorrect",
-        "field": "id"
+        "field": "title"
       }
     ]
   }
   res.status(400).send(errorMessage)
-
 })
 
 app.listen(port, () => {
