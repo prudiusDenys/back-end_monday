@@ -89,7 +89,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
       }
     ]
   }
-  res.status(404).send(errorMessage)
+  res.status(400).send(errorMessage)
 
 })
 
