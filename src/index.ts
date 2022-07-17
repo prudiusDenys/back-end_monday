@@ -39,7 +39,7 @@ app.get('/videos/:videoId', (req: Request, res: Response) => {
 })
 
 app.post('/videos', (req: Request, res: Response) => {
-  if (req.body.title.length && req.body.title.length <= 40) {
+  if (req.body.title && req.body.title.length <= 40) {
     const newVideo = {
       id: +(new Date()),
       title: req.body.title,
@@ -89,7 +89,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
       }
     ]
   }
-  res.status(400).send(errorMessage)
+  res.status(404).send(errorMessage)
 
 })
 
