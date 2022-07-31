@@ -1,6 +1,7 @@
 import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+import {type} from 'os';
 
 const app = express()
 
@@ -10,6 +11,8 @@ app.use(
 )
 
 const port = process.env.PORT || 3000
+
+//Videos
 
 let videos = [
   {id: 1, title: 'About JS - 01', author: 'it-incubator.eu'},
@@ -95,6 +98,126 @@ app.put('/videos/:id', (req: Request, res: Response) => {
     ]
   }
   res.status(400).send(errorMessage)
+})
+
+
+// Bloggers
+
+interface Bloggers {
+  id: number
+  name: string
+  youtubeUrl: string
+}
+
+let bloggers: Array<Bloggers> = [
+  {id: 1, name: 'Denis', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
+  {id: 2, name: 'Andrei', youtubeUrl: 'https://youtu.be/HudXvOlQfrQ'},
+  {id: 3, name: 'John', youtubeUrl: 'https://youtu.be/PFSJgBECNeU'},
+  {id: 4, name: 'Marcello', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
+  {id: 5, name: 'Jakob', youtubeUrl: 'https://youtu.be/PFSJgBECNeU'},
+]
+
+app.get('/bloggers', (req: Request, res: Response) => {
+  res.status(200).send(bloggers)
+})
+
+app.get('/bloggers/:id', (req: Request, res: Response) => {
+  const id = +req.params.id
+  const blogger = bloggers.find(blogger => blogger.id === id)
+  if (blogger) {
+    res.status(200).send(blogger);
+    return;
+  }
+  res.sendStatus(404);
+})
+
+app.post('/bloggers', (req: Request, res: Response) => {
+  const {name, youtubeUrl} = req.body
+
+  if(!name || typeof youtubeUrl !== 'string' || name.length > 15){
+    const errorMessage = {
+      "errorsMessages": [
+        {
+          "message": "name is incorrect",
+          "field": "name"
+        }
+      ]
+    }
+    res.send(errorMessage)
+    return;
+  }
+
+  if(!youtubeUrl || youtubeUrl.length > 100 ){
+    const errorMessage = {
+      "errorsMessages": [
+        {
+          "message": "youtubeUrl is incorrect",
+          "field": "youtubeUrl"
+        }
+      ]
+    }
+    res.send(errorMessage)
+    return;
+  }
+
+  const newUser = {
+    id: +(new Date()),
+    name,
+    youtubeUrl
+  }
+  bloggers.push(newUser)
+  res.status(201).send(newUser)
+})
+
+app.put('/bloggers/:id', (req: Request, res: Response) => {
+  const id = +req.params.id;
+  const {name, youtubeUrl} = req.body
+
+  if(!name || typeof youtubeUrl !== 'string' || name.length > 15){
+    const errorMessage = {
+      "errorsMessages": [
+        {
+          "message": "name is incorrect",
+          "field": "name"
+        }
+      ]
+    }
+    res.status(400).send(errorMessage)
+    return;
+  }
+
+  if(!youtubeUrl || youtubeUrl.length > 100 ){
+    const errorMessage = {
+      "errorsMessages": [
+        {
+          "message": "youtubeUrl is incorrect",
+          "field": "youtubeUrl"
+        }
+      ]
+    }
+    res.status(400).send(errorMessage)
+    return;
+  }
+
+  const blogger = bloggers.find(blogger => blogger.id === id)
+  if (blogger) {
+    blogger.name = name
+    blogger.youtubeUrl = youtubeUrl
+    res.sendStatus(204)
+    return;
+  }
+  res.sendStatus(404)
+})
+
+app.delete('/bloggers/:id', (req: Request, res: Response) => {
+  const id = +req.params.id
+  const blogger = bloggers.find(blogger => blogger.id === id)
+  if (blogger) {
+    bloggers = bloggers.filter(blogger => blogger.id !== id)
+    res.sendStatus(204)
+    return
+  }
+  res.sendStatus(404)
 })
 
 app.listen(port, () => {
