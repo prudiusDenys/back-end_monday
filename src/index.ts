@@ -2,6 +2,8 @@ import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import {type} from 'os';
+import {handleBloggersErrors} from './utils/handleErrors';
+import {Bloggers} from './utils/interfaces';
 
 const app = express()
 
@@ -103,12 +105,6 @@ app.put('/videos/:id', (req: Request, res: Response) => {
 
 // Bloggers
 
-interface Bloggers {
-  id: number
-  name: string
-  youtubeUrl: string
-}
-
 let bloggers: Array<Bloggers> = [
   {id: 1, name: 'Denis', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
   {id: 2, name: 'Andrei', youtubeUrl: 'https://youtu.be/HudXvOlQfrQ'},
@@ -133,40 +129,15 @@ app.get('/bloggers/:id', (req: Request, res: Response) => {
 
 app.post('/bloggers', (req: Request, res: Response) => {
   const {name, youtubeUrl} = req.body
-  const regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
 
+  const errorMessage = handleBloggersErrors(name, youtubeUrl);
 
-  if (!name || typeof youtubeUrl !== 'string' || name.length > 15) {
-    const errorMessage = {
-      "errorsMessages": [
-        {
-          "message": "name is incorrect",
-          "field": "name"
-        }
-      ]
-    }
-    res.send(errorMessage)
-    return;
+  if (errorMessage.errorsMessages.length) {
+    res.status(400).send(errorMessage)
+    return
   }
 
-  if (!youtubeUrl || youtubeUrl.length > 100 || !regexp.exec(youtubeUrl)) {
-    const errorMessage = {
-      "errorsMessages": [
-        {
-          "message": "youtubeUrl is incorrect",
-          "field": "youtubeUrl"
-        }
-      ]
-    }
-    res.send(errorMessage)
-    return;
-  }
-
-  const newUser = {
-    id: +(new Date()),
-    name,
-    youtubeUrl
-  }
+  const newUser = {id: +(new Date()), name, youtubeUrl}
   bloggers.push(newUser)
   res.status(201).send(newUser)
 })
@@ -174,32 +145,12 @@ app.post('/bloggers', (req: Request, res: Response) => {
 app.put('/bloggers/:id', (req: Request, res: Response) => {
   const id = +req.params.id;
   const {name, youtubeUrl} = req.body
-  const regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
 
-  if (!name || typeof youtubeUrl !== 'string' || name.length > 15) {
-    const errorMessage = {
-      "errorsMessages": [
-        {
-          "message": "name is incorrect",
-          "field": "name"
-        }
-      ]
-    }
-    res.status(400).send(errorMessage)
-    return;
-  }
+  const errorMessage = handleBloggersErrors(name, youtubeUrl);
 
-  if (!youtubeUrl || youtubeUrl.length > 100 || !regexp.exec(youtubeUrl)) {
-    const errorMessage = {
-      "errorsMessages": [
-        {
-          "message": "youtubeUrl is incorrect",
-          "field": "youtubeUrl"
-        }
-      ]
-    }
+  if (errorMessage.errorsMessages.length) {
     res.status(400).send(errorMessage)
-    return;
+    return
   }
 
   const blogger = bloggers.find(blogger => blogger.id === id)
