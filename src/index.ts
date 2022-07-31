@@ -133,8 +133,10 @@ app.get('/bloggers/:id', (req: Request, res: Response) => {
 
 app.post('/bloggers', (req: Request, res: Response) => {
   const {name, youtubeUrl} = req.body
+  const regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
 
-  if(!name || typeof youtubeUrl !== 'string' || name.length > 15){
+
+  if (!name || typeof youtubeUrl !== 'string' || name.length > 15) {
     const errorMessage = {
       "errorsMessages": [
         {
@@ -147,7 +149,7 @@ app.post('/bloggers', (req: Request, res: Response) => {
     return;
   }
 
-  if(!youtubeUrl || youtubeUrl.length > 100 ){
+  if (!youtubeUrl || youtubeUrl.length > 100 || !regexp.exec(youtubeUrl)) {
     const errorMessage = {
       "errorsMessages": [
         {
@@ -172,8 +174,9 @@ app.post('/bloggers', (req: Request, res: Response) => {
 app.put('/bloggers/:id', (req: Request, res: Response) => {
   const id = +req.params.id;
   const {name, youtubeUrl} = req.body
+  const regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
 
-  if(!name || typeof youtubeUrl !== 'string' || name.length > 15){
+  if (!name || typeof youtubeUrl !== 'string' || name.length > 15) {
     const errorMessage = {
       "errorsMessages": [
         {
@@ -186,7 +189,7 @@ app.put('/bloggers/:id', (req: Request, res: Response) => {
     return;
   }
 
-  if(!youtubeUrl || youtubeUrl.length > 100 ){
+  if (!youtubeUrl || youtubeUrl.length > 100 || !regexp.exec(youtubeUrl)) {
     const errorMessage = {
       "errorsMessages": [
         {
