@@ -2,8 +2,8 @@ import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import {type} from 'os';
-import {handleBloggersErrors} from './utils/handleErrors';
-import {Bloggers} from './utils/interfaces';
+import {handleBloggersErrors, handlePostsErrors} from './utils/handleErrors';
+import {Bloggers, Posts} from './utils/interfaces';
 
 const app = express()
 
@@ -173,6 +173,85 @@ app.delete('/bloggers/:id', (req: Request, res: Response) => {
   }
   res.sendStatus(404)
 })
+
+
+// posts
+
+let posts: Array<Posts> = [
+  {id: 1, title: 'Moscow', bloggerId: 11, bloggerName: 'Denis', content: 'blabla', shortDescription: 'aboutUs1'},
+  {id: 2, title: 'Moscow', bloggerId: 12, bloggerName: 'Misha', content: 'blabla1', shortDescription: 'aboutUs2'},
+  {id: 3, title: 'Moscow', bloggerId: 13, bloggerName: 'Kolya', content: 'blabla2', shortDescription: 'aboutUs3'},
+  {id: 4, title: 'Moscow', bloggerId: 14, bloggerName: 'Sasha', content: 'blabla3', shortDescription: 'aboutUs4'},
+  {id: 5, title: 'Moscow', bloggerId: 15, bloggerName: 'Luda', content: 'blabla4', shortDescription: 'aboutUs5'},
+]
+
+
+app.get('/posts', (req: Request, res: Response) => {
+  res.status(200).send(posts)
+})
+
+app.get('/posts/:id', (req: Request, res: Response) => {
+  const id = +req.params.id
+  const post = posts.find(blogger => blogger.id === id)
+  if (post) {
+    res.status(200).send(post);
+    return;
+  }
+  res.sendStatus(404);
+})
+
+app.post('/posts', (req: Request, res: Response) => {
+
+  const errorMessage = handlePostsErrors(req.body)
+
+  if (errorMessage.errorsMessages.length) {
+    res.status(400).send(errorMessage)
+    return
+  }
+
+    const newPost = {
+      id: +(new Date()),
+      ...req.body
+    }
+    posts.push(newPost)
+    res.status(201).send(newPost)
+})
+
+app.put('/posts/:id', (req: Request, res: Response) => {
+  const id = +req.params.id;
+  const {title, shortDescription, content, bloggerId, bloggerName} = req.body
+
+  const errorMessage = handlePostsErrors(req.body);
+
+  if (errorMessage.errorsMessages.length) {
+    res.status(400).send(errorMessage)
+    return
+  }
+
+  let post = posts.find(post => post.id === id)
+  if (post) {
+    post.title = title
+    post.shortDescription = shortDescription
+    post.content = content
+    post.bloggerId = bloggerId
+    post.bloggerName = bloggerName
+    res.sendStatus(204)
+    return;
+  }
+  res.sendStatus(404)
+})
+
+app.delete('/posts/:id', (req: Request, res: Response) => {
+  const id = +req.params.id
+  const post = posts.find(post => post.id === id)
+  if (post) {
+    posts = posts.filter(blogger => blogger.id !== id)
+    res.sendStatus(204)
+    return
+  }
+  res.sendStatus(404)
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
