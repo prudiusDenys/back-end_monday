@@ -1,11 +1,11 @@
 import {ErrorMessage, Posts} from './interfaces';
 
-const errorMessage: ErrorMessage = {
-  errorsMessages: []
-}
+
 
 export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
-
+  const errorMessage: ErrorMessage = {
+    errorsMessages: []
+  }
 
   const regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
 
@@ -25,7 +25,9 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
 }
 
 export const handlePostsErrors = ({title, shortDescription, content, bloggerId}: Posts) => {
-
+  const errorMessage: ErrorMessage = {
+    errorsMessages: []
+  }
   if (!title || !title.trim() || typeof title !== 'string' || title.length > 30) {
     errorMessage.errorsMessages.push({
       message: "title is incorrect",

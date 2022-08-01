@@ -106,11 +106,11 @@ app.put('/videos/:id', (req: Request, res: Response) => {
 // Bloggers
 
 let bloggers: Array<Bloggers> = [
-  {id: 1, name: 'Denis', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
-  {id: 2, name: 'Andrei', youtubeUrl: 'https://youtu.be/HudXvOlQfrQ'},
-  {id: 3, name: 'John', youtubeUrl: 'https://youtu.be/PFSJgBECNeU'},
-  {id: 4, name: 'Marcello', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
-  {id: 5, name: 'Jakob', youtubeUrl: 'https://youtu.be/PFSJgBECNeU'},
+  {id: 11, name: 'Denis', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
+  {id: 12, name: 'Andrei', youtubeUrl: 'https://youtu.be/HudXvOlQfrQ'},
+  {id: 13, name: 'John', youtubeUrl: 'https://youtu.be/PFSJgBECNeU'},
+  {id: 14, name: 'Marcello', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
+  {id: 15, name: 'Jakob', youtubeUrl: 'https://youtu.be/PFSJgBECNeU'},
 ]
 
 app.get('/bloggers', (req: Request, res: Response) => {
@@ -211,6 +211,7 @@ app.post('/posts', (req: Request, res: Response) => {
 
     const newPost = {
       id: +(new Date()),
+      bloggerName: 'denis',
       ...req.body
     }
     posts.push(newPost)
