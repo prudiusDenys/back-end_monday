@@ -2,7 +2,7 @@ import {Bloggers} from '../utils/interfaces';
 import {Request, Response, Router} from 'express';
 import {handleBloggersErrors} from '../utils/handleErrors';
 
-let bloggers: Array<Bloggers> = [
+export let bloggers: Array<Bloggers> = [
   {id: 11, name: 'Denis', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
   {id: 12, name: 'Andrei', youtubeUrl: 'https://youtu.be/HudXvOlQfrQ'},
   {id: 13, name: 'John', youtubeUrl: 'https://youtu.be/PFSJgBECNeU'},

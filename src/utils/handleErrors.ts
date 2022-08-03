@@ -1,4 +1,5 @@
 import {ErrorMessage, Posts} from './interfaces';
+import {bloggers} from '../routes/bloggers-router';
 
 
 
@@ -55,6 +56,15 @@ export const handlePostsErrors = ({title, shortDescription, content, bloggerId}:
       field: "bloggerId"
     })
   }
+
+  const foundBlogger = bloggers.find(blogger => blogger.id === bloggerId)
+  if(!foundBlogger){
+    errorMessage.errorsMessages.push({
+      message: "bloggerId is incorrect",
+      field: "bloggerId"
+    })
+  }
+
 
   return errorMessage
 }
