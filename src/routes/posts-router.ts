@@ -1,6 +1,7 @@
 import {Request, Response, Router} from 'express';
 import {handlePostsErrors} from '../utils/handleErrors';
 import {Posts} from '../utils/interfaces';
+import {bloggers} from './bloggers-router';
 
 let posts: Array<Posts> = [
   {id: 1, title: 'Moscow', bloggerId: 11, bloggerName: 'Denis', content: 'blabla', shortDescription: 'aboutUs1'},
@@ -27,6 +28,8 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 })
 postsRouter.post('/', (req: Request, res: Response) => {
 
+  const {bloggerId} = req.body
+
   const errorMessage = handlePostsErrors(req.body)
 
   if (errorMessage.errorsMessages.length) {
@@ -34,13 +37,16 @@ postsRouter.post('/', (req: Request, res: Response) => {
     return
   }
 
-  const newPost = {
-    id: +(new Date()),
-    bloggerName: 'denis',
-    ...req.body
+  const foundBlogger = bloggers.find(blogger => blogger.id === bloggerId)
+  if (foundBlogger) {
+    const newPost = {
+      id: +(new Date()),
+      bloggerName: foundBlogger.name,
+      ...req.body
+    }
+    posts.push(newPost)
+    res.status(201).send(newPost)
   }
-  posts.push(newPost)
-  res.status(201).send(newPost)
 })
 postsRouter.put('/:id', (req: Request, res: Response) => {
   const id = +req.params.id;
