@@ -49,7 +49,7 @@ export const handlePostsErrors = ({title, shortDescription, content, bloggerId}:
     })
   }
 
-  if (!bloggerId || typeof bloggerId !== 'number') {
+  if (!bloggerId || !Number.isInteger(bloggerId) || typeof bloggerId !== 'number') {
     errorMessage.errorsMessages.push({
       message: "bloggerId is incorrect",
       field: "bloggerId"
