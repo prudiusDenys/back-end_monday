@@ -6,21 +6,21 @@ export const videoRouter = Router({})
 
 videoRouter.get('/', (req: Request, res: Response) => {
   const videos = videosRepository.getAllVideos()
-  res.send(videos)
+  res.status(200).send(videos)
 })
 
 videoRouter.get('/:videoId', (req: Request, res: Response) => {
   const id = +req.params.videoId
   const video = videosRepository.findVideo(id)
   if (video) {
-    res.send(video)
+    res.status(201).send(video)
     return
   }
   res.sendStatus(404)
 })
 
 videoRouter.post('/', (req: Request, res: Response) => {
-  const data: any = videosRepository.createVideo(req.body.title)
+  const data: any = videosRepository.createVideo(req.body)
   if (data.errorsMessages) {
     res.status(400).send(data)
     return;
@@ -39,9 +39,8 @@ videoRouter.delete('/:id', (req: Request, res: Response) => {
 
 videoRouter.put('/:id', (req: Request, res: Response) => {
   const id = +req.params.id
-  const title = req.body.title
 
-  const data = videosRepository.editVideo(id, title)
+  const data = videosRepository.editVideo(id, req.body)
 
   switch (data) {
     case '204':
