@@ -4,7 +4,7 @@ import {Posts} from '../utils/interfaces';
 import {bloggers} from './bloggers-router';
 import {authMiddleware} from '../middlewares/authMiddleware';
 
-let posts: Array<Posts> = [
+export let posts: Array<Posts> = [
   {id: 1, title: 'Moscow', bloggerId: 11, bloggerName: 'Denis', content: 'blabla', shortDescription: 'aboutUs1'},
   {id: 2, title: 'Moscow', bloggerId: 12, bloggerName: 'Misha', content: 'blabla1', shortDescription: 'aboutUs2'},
   {id: 3, title: 'Moscow', bloggerId: 13, bloggerName: 'Kolya', content: 'blabla2', shortDescription: 'aboutUs3'},

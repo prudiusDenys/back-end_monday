@@ -1,4 +1,4 @@
-let videos = [
+export let videos = [
   {id: 1, title: 'About JS - 01', author: 'it-incubator.eu'},
   {id: 2, title: 'About JS - 02', author: 'it-incubator.eu'},
   {id: 3, title: 'About JS - 03', author: 'it-incubator.eu'},
