@@ -1,6 +1,7 @@
 import {Bloggers} from '../utils/interfaces';
 import {Request, Response, Router} from 'express';
 import {handleBloggersErrors} from '../utils/handleErrors';
+import {authMiddleware} from '../middlewares/authMiddleware';
 
 export let bloggers: Array<Bloggers> = [
   {id: 11, name: 'Denis', youtubeUrl: 'https://youtu.be/uaYzPV2pSL4'},
@@ -12,7 +13,7 @@ export let bloggers: Array<Bloggers> = [
 
 export const bloggersRouter = Router({})
 
-bloggersRouter.get('/', (req: Request, res: Response) => {
+bloggersRouter.get('/',(req: Request, res: Response) => {
   res.status(200).send(bloggers)
 })
 
@@ -26,7 +27,7 @@ bloggersRouter.get('/:id', (req: Request, res: Response) => {
   res.sendStatus(404);
 })
 
-bloggersRouter.post('/', (req: Request, res: Response) => {
+bloggersRouter.post('/', authMiddleware, (req: Request, res: Response) => {
   const {name, youtubeUrl} = req.body
 
   const errorMessage = handleBloggersErrors(name, youtubeUrl);
@@ -41,7 +42,7 @@ bloggersRouter.post('/', (req: Request, res: Response) => {
   res.status(201).send(newUser)
 })
 
-bloggersRouter.put('/:id', (req: Request, res: Response) => {
+bloggersRouter.put('/:id', authMiddleware, (req: Request, res: Response) => {
   const id = +req.params.id;
   const {name, youtubeUrl} = req.body
 
@@ -62,7 +63,7 @@ bloggersRouter.put('/:id', (req: Request, res: Response) => {
   res.sendStatus(404)
 })
 
-bloggersRouter.delete('/:id', (req: Request, res: Response) => {
+bloggersRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
   const id = +req.params.id
   const blogger = bloggers.find(blogger => blogger.id === id)
   if (blogger) {

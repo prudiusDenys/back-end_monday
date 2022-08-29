@@ -2,6 +2,7 @@ import {Request, Response, Router} from 'express';
 import {handlePostsErrors} from '../utils/handleErrors';
 import {Posts} from '../utils/interfaces';
 import {bloggers} from './bloggers-router';
+import {authMiddleware} from '../middlewares/authMiddleware';
 
 let posts: Array<Posts> = [
   {id: 1, title: 'Moscow', bloggerId: 11, bloggerName: 'Denis', content: 'blabla', shortDescription: 'aboutUs1'},
@@ -14,7 +15,6 @@ let posts: Array<Posts> = [
 export const postsRouter = Router({})
 
 postsRouter.get('/', (req: Request, res: Response) => {
-  debugger
   res.status(200).send(posts)
 })
 postsRouter.get('/:id', (req: Request, res: Response) => {
@@ -26,7 +26,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
   }
   res.sendStatus(404);
 })
-postsRouter.post('/', (req: Request, res: Response) => {
+postsRouter.post('/', authMiddleware, (req: Request, res: Response) => {
 
   const {bloggerId} = req.body
 
@@ -48,7 +48,7 @@ postsRouter.post('/', (req: Request, res: Response) => {
     res.status(201).send(newPost)
   }
 })
-postsRouter.put('/:id', (req: Request, res: Response) => {
+postsRouter.put('/:id', authMiddleware, (req: Request, res: Response) => {
   const id = +req.params.id;
   const {title, shortDescription, content, bloggerId} = req.body
 
@@ -70,7 +70,7 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
   }
   res.sendStatus(404)
 })
-postsRouter.delete('/:id', (req: Request, res: Response) => {
+postsRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
   const id = +req.params.id
   const post = posts.find(post => post.id === id)
   if (post) {

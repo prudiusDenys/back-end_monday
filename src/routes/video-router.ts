@@ -1,91 +1,63 @@
 import {Request, Response, Router} from 'express';
-
-let videos = [
-  {id: 1, title: 'About JS - 01', author: 'it-incubator.eu'},
-  {id: 2, title: 'About JS - 02', author: 'it-incubator.eu'},
-  {id: 3, title: 'About JS - 03', author: 'it-incubator.eu'},
-  {id: 4, title: 'About JS - 04', author: 'it-incubator.eu'},
-  {id: 5, title: 'About JS - 05', author: 'it-incubator.eu'},
-]
+import {videosRepository} from '../repositories/videos-repository';
 
 export const videoRouter = Router({})
 
 
-
 videoRouter.get('/', (req: Request, res: Response) => {
-  let helloMessage = 'hello'
-  res.send(helloMessage)
-})
-
-videoRouter.get('/', (req: Request, res: Response) => {
+  const videos = videosRepository.getAllVideos()
   res.send(videos)
 })
 
 videoRouter.get('/:videoId', (req: Request, res: Response) => {
   const id = +req.params.videoId
-  const foundVideo = videos.find(video => video.id == id)
-  if (foundVideo) {
-    res.send(foundVideo)
+  const video = videosRepository.findVideo(id)
+  if (video) {
+    res.send(video)
     return
   }
   res.sendStatus(404)
 })
 
 videoRouter.post('/', (req: Request, res: Response) => {
-  if (req.body.title && req.body.title.length <= 40) {
-    const newVideo = {
-      id: +(new Date()),
-      title: req.body.title,
-      author: 'it-incubator.eu'
-    }
-    videos.push(newVideo)
-    res.status(201).send(newVideo)
-    return
+  const data: any = videosRepository.createVideo(req.body.title)
+  if (data.errorsMessages) {
+    res.status(400).send(data)
+    return;
   }
-  const errorMessage = {
-    "errorsMessages": [
-      {
-        "message": "title is incorrect",
-        "field": "title"
-      }
-    ]
-  }
-  res.status(400).send(errorMessage)
-
+  res.status(201).send(data)
 })
 
 videoRouter.delete('/:id', (req: Request, res: Response) => {
-  const id = +req.params.id
-  const isId = videos.find(item => item.id === id)
-  if (isId) {
-    videos = videos.filter(video => video.id !== id)
+  const isRemoved = videosRepository.removeVideo(+req.params.id)
+  if (isRemoved) {
     res.sendStatus(204)
-    return
+  } else {
+    res.sendStatus(404)
   }
-  res.sendStatus(404)
 })
 
 videoRouter.put('/:id', (req: Request, res: Response) => {
   const id = +req.params.id
   const title = req.body.title
-  const foundVideo = videos.find(video => video.id === id);
 
-  if (title && title.length <= 40 && foundVideo) {
-    foundVideo.title = title
-    res.sendStatus(204)
-    return
+  const data = videosRepository.editVideo(id, title)
+
+  switch (data) {
+    case '204':
+      res.sendStatus(204)
+      break
+    case '400':
+      res.status(400).send({
+        "errorsMessages": [
+          {
+            "message": "id is incorrect",
+            "field": "title"
+          }
+        ]
+      })
+      break
+    default:
+      res.sendStatus(404)
   }
-  if (!foundVideo) {
-    res.sendStatus(404);
-    return;
-  }
-  const errorMessage = {
-    "errorsMessages": [
-      {
-        "message": "id is incorrect",
-        "field": "title"
-      }
-    ]
-  }
-  res.status(400).send(errorMessage)
 })

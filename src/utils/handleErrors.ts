@@ -1,8 +1,6 @@
 import {ErrorMessage, Posts} from './interfaces';
 import {bloggers} from '../routes/bloggers-router';
 
-
-
 export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
@@ -24,7 +22,6 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   }
   return errorMessage
 }
-
 export const handlePostsErrors = ({title, shortDescription, content, bloggerId}: Posts) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
@@ -64,7 +61,6 @@ export const handlePostsErrors = ({title, shortDescription, content, bloggerId}:
       field: "bloggerId"
     })
   }
-
 
   return errorMessage
 }
