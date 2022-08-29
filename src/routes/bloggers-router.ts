@@ -33,7 +33,7 @@ bloggersRouter.post('/', authMiddleware, (req: Request, res: Response) => {
   const errorMessage = handleBloggersErrors(name, youtubeUrl);
 
   if (errorMessage.errorsMessages.length) {
-    res.status(401).send(errorMessage)
+    res.status(400).send(errorMessage)
     return
   }
 
@@ -49,7 +49,7 @@ bloggersRouter.put('/:id', authMiddleware, (req: Request, res: Response) => {
   const errorMessage = handleBloggersErrors(name, youtubeUrl);
 
   if (errorMessage.errorsMessages.length) {
-    res.status(401).send(errorMessage)
+    res.status(400).send(errorMessage)
     return
   }
 
