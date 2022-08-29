@@ -33,7 +33,7 @@ postsRouter.post('/', authMiddleware, (req: Request, res: Response) => {
   const errorMessage = handlePostsErrors(req.body)
 
   if (errorMessage.errorsMessages.length) {
-    res.status(400).send(errorMessage)
+    res.status(401).send(errorMessage)
     return
   }
 
@@ -55,7 +55,7 @@ postsRouter.put('/:id', authMiddleware, (req: Request, res: Response) => {
   const errorMessage = handlePostsErrors(req.body);
 
   if (errorMessage.errorsMessages.length) {
-    res.status(400).send(errorMessage)
+    res.status(401).send(errorMessage)
     return
   }
 
