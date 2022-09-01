@@ -1,5 +1,5 @@
-import {ErrorMessage, Posts} from './interfaces';
-import {bloggers} from '../routes/bloggers-router';
+import {ErrorMessage, Post} from './interfaces';
+import {bloggers} from '../repositories/bloggers-repository';
 
 export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   const errorMessage: ErrorMessage = {
@@ -22,7 +22,7 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   }
   return errorMessage
 }
-export const handlePostsErrors = ({title, shortDescription, content, bloggerId}: Posts) => {
+export const handlePostsErrors = ({title, shortDescription, content, bloggerId}: Post) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
   }

@@ -1,82 +1,57 @@
 import {Request, Response, Router} from 'express';
-import {handlePostsErrors} from '../utils/handleErrors';
-import {Posts} from '../utils/interfaces';
-import {bloggers} from './bloggers-router';
 import {authMiddleware} from '../middlewares/authMiddleware';
+import {postsRepository} from '../repositories/posts-repository';
+import {Post} from '../utils/interfaces';
 
-export let posts: Array<Posts> = [
-  {id: 1, title: 'Moscow', bloggerId: 11, bloggerName: 'Denis', content: 'blabla', shortDescription: 'aboutUs1'},
-  {id: 2, title: 'Moscow', bloggerId: 12, bloggerName: 'Misha', content: 'blabla1', shortDescription: 'aboutUs2'},
-  {id: 3, title: 'Moscow', bloggerId: 13, bloggerName: 'Kolya', content: 'blabla2', shortDescription: 'aboutUs3'},
-  {id: 4, title: 'Moscow', bloggerId: 14, bloggerName: 'Sasha', content: 'blabla3', shortDescription: 'aboutUs4'},
-  {id: 5, title: 'Moscow', bloggerId: 15, bloggerName: 'Luda', content: 'blabla4', shortDescription: 'aboutUs5'},
-]
 
 export const postsRouter = Router({})
 
 postsRouter.get('/', (req: Request, res: Response) => {
-  res.status(200).send(posts)
+  const posts: Post[] = postsRepository.getAllPosts()
+  res.status(200).json(posts)
 })
+
 postsRouter.get('/:id', (req: Request, res: Response) => {
-  const id = +req.params.id
-  const post = posts.find(blogger => blogger.id === id)
+  const post: Post | undefined = postsRepository.findPost(+req.params.id)
+
   if (post) {
-    res.status(200).send(post);
-    return;
+    res.status(200).json(post);
+  } else {
+    res.sendStatus(404);
   }
-  res.sendStatus(404);
 })
+
 postsRouter.post('/', authMiddleware, (req: Request, res: Response) => {
+  const data: any = postsRepository.createPost(req.body)
 
-  const {bloggerId} = req.body
-
-  const errorMessage = handlePostsErrors(req.body)
-
-  if (errorMessage.errorsMessages.length) {
-    res.status(400).send(errorMessage)
-    return
-  }
-
-  const foundBlogger = bloggers.find(blogger => blogger.id === bloggerId)
-  if (foundBlogger) {
-    const newPost = {
-      id: +(new Date()),
-      bloggerName: foundBlogger.name,
-      ...req.body
-    }
-    posts.push(newPost)
-    res.status(201).send(newPost)
+  if (data?.error) {
+    res.status(400).json(data.error)
+  } else if (data?.value) {
+    res.status(201).json(data.value)
   }
 })
+
 postsRouter.put('/:id', authMiddleware, (req: Request, res: Response) => {
-  const id = +req.params.id;
-  const {title, shortDescription, content, bloggerId} = req.body
+  const data: any = postsRepository.editPost(+req.params.id, req.body)
 
-  const errorMessage = handlePostsErrors(req.body);
-
-  if (errorMessage.errorsMessages.length) {
-    res.status(400).send(errorMessage)
-    return
+  if (data?.error) {
+    res.status(400).json(data.error)
   }
-
-  let post = posts.find(post => post.id === id)
-  if (post) {
-    post.title = title
-    post.shortDescription = shortDescription
-    post.content = content
-    post.bloggerId = bloggerId
+  if (data.status === 'success') {
     res.sendStatus(204)
-    return;
   }
-  res.sendStatus(404)
+  if (data.status === 'notFound') {
+    res.sendStatus(404)
+  }
 })
+
 postsRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
-  const id = +req.params.id
-  const post = posts.find(post => post.id === id)
-  if (post) {
-    posts = posts.filter(blogger => blogger.id !== id)
+  const status = postsRepository.deletePost(+req.params.id)
+
+  if (status.status === 'success') {
     res.sendStatus(204)
-    return
   }
-  res.sendStatus(404)
+  if (status.status === 'notFound') {
+    res.sendStatus(404)
+  }
 })

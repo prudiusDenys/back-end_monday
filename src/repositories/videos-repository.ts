@@ -1,4 +1,7 @@
-export let videos = [
+import {Video} from '../utils/interfaces';
+
+
+export let videos: Video[] = [
   {
     id: 1,
     title: "About JS - 01",
@@ -61,64 +64,56 @@ export let videos = [
   }
 ]
 
+interface CreateVideo {
+  "title": string
+  "author": string
+  "availableResolutions": Array<string>
+}
+
+interface EditVideo {
+  title: string
+  author: string
+  availableResolutions: Array<string>,
+  canBeDownloaded: boolean
+  minAgeRestriction: number
+  publicationDate: string
+}
+
 export const videosRepository = {
   getAllVideos() {
     return videos
   },
   findVideo(id: number) {
-    const foundVideo = videos.find(video => video.id == id)
-    if (foundVideo) {
-      return foundVideo
-    }
-    return null;
+    return videos.find(video => video.id == id)
   },
-  createVideo(data: any) {
-    if (data.title && data.title.length <= 40) {
-      const newVideo = {
-        id: +(new Date()),
-        title: data.title,
-        author: data.author,
-        canBeDownloaded: true,
-        minAgeRestriction: null,
-        createdAt: "2022-08-29T16:29:54.567Z",
-        publicationDate: "2022-08-29T16:29:54.567Z",
-        availableResolutions: data.availableResolutions
-      }
-      videos.push(newVideo)
-      return newVideo
+  createVideo(data: CreateVideo) {
+    const newVideo: Video = {
+      id: +(new Date()),
+      title: data.title,
+      author: data.author,
+      canBeDownloaded: true,
+      minAgeRestriction: null,
+      createdAt: "2022-08-29T16:29:54.567Z",
+      publicationDate: "2022-08-29T16:29:54.567Z",
+      availableResolutions: data.availableResolutions
     }
-    return {
-      "errorsMessages": [
-        {
-          "message": "title is incorrect",
-          "field": "title"
-        }
-      ]
+    videos.push(newVideo)
+    return newVideo
+  },
+  editVideo(id: number, data: EditVideo) {
+    let foundVideo = videos.find(video => video.id === id);
+    if (foundVideo) {
+      foundVideo = {...foundVideo, ...data}
+      return {status: 'success'}
     }
+    return {status: 'notFound'}
   },
   removeVideo(id: number) {
-    const isId = videos.find(item => item.id === id)
-    if (isId) {
+    const video = videos.find(item => item.id === id)
+    if (video) {
       videos = videos.filter(video => video.id !== id)
-      return true
+      return {status: 'success'}
     }
-    return false
-  },
-  editVideo(id: number, data: any) {
-    const foundVideo = videos.find(video => video.id === id);
-
-    if (data.title && data.title.length <= 40 && foundVideo) {
-      foundVideo.title = data.title
-      foundVideo.author = data.author
-      foundVideo.availableResolutions = data.availableResolutions
-      foundVideo.canBeDownloaded = data.canBeDownloaded
-      foundVideo.minAgeRestriction = data.minAgeRestriction
-      foundVideo.publicationDate = data.publicationDate
-      return '204'
-    }
-    if (!foundVideo) {
-      return '404'
-    }
-    return '400'
+    return {status: 'notFound'}
   }
 }

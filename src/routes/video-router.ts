@@ -1,62 +1,47 @@
 import {Request, Response, Router} from 'express';
 import {videosRepository} from '../repositories/videos-repository';
+import {Video} from '../utils/interfaces';
+
 
 export const videoRouter = Router({})
 
-
 videoRouter.get('/', (req: Request, res: Response) => {
-  const videos = videosRepository.getAllVideos()
-  res.status(200).send(videos)
+  const videos: Video[] = videosRepository.getAllVideos()
+  res.status(200).json(videos)
 })
 
 videoRouter.get('/:videoId', (req: Request, res: Response) => {
-  const id = +req.params.videoId
-  const video = videosRepository.findVideo(id)
+  const video: Video | undefined = videosRepository.findVideo(+req.params.videoId)
+
   if (video) {
-    res.status(201).send(video)
-    return
-  }
-  res.sendStatus(404)
-})
-
-videoRouter.post('/', (req: Request, res: Response) => {
-  const data: any = videosRepository.createVideo(req.body)
-  if (data.errorsMessages) {
-    res.status(400).send(data)
-    return;
-  }
-  res.status(201).send(data)
-})
-
-videoRouter.delete('/:id', (req: Request, res: Response) => {
-  const isRemoved = videosRepository.removeVideo(+req.params.id)
-  if (isRemoved) {
-    res.sendStatus(204)
+    res.status(200).json(video)
   } else {
     res.sendStatus(404)
   }
 })
 
+videoRouter.post('/', (req: Request, res: Response) => {
+  const data: Video = videosRepository.createVideo(req.body)
+  res.status(201).json(data)
+})
+
 videoRouter.put('/:id', (req: Request, res: Response) => {
-  const id = +req.params.id
+  const data = videosRepository.editVideo(+req.params.id, req.body)
 
-  const data = videosRepository.editVideo(id, req.body)
+  if (data.status === 'success') {
+    res.sendStatus(204)
+  }
+  if (data.status === 'notFound') {
+    res.sendStatus(404)
+  }
+})
 
-  switch (data) {
-    case '204':
-      res.sendStatus(204)
-      break
-    case '400':
-      res.status(400).send({
-        "errorsMessages": [
-          {
-            "message": "id is incorrect",
-            "field": "title"
-          }
-        ]
-      })
-      break
-    default:
-      res.sendStatus(404)
+videoRouter.delete('/:id', (req: Request, res: Response) => {
+  const data = videosRepository.removeVideo(+req.params.id)
+
+  if (data.status === 'success') {
+    res.sendStatus(204)
+  } else {
+    res.sendStatus(404)
   }
 })
