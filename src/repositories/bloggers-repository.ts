@@ -17,7 +17,12 @@ export const bloggersRepository = {
       return {error: errorMessage}
     }
 
-    const newUser = {id: +(new Date()), name, youtubeUrl}
+    const newUser = {
+      id: +(new Date()),
+      name,
+      youtubeUrl,
+      createdAt: '2022-09-13T18:26:09.391Z'
+    }
     await homework3.insertOne(newUser)
 
     return {value: newUser}

@@ -2,6 +2,7 @@ export interface Blogger {
   id: number
   name: string
   youtubeUrl: string
+  createdAt: string
 }
 
 export interface Post {
@@ -13,7 +14,7 @@ export interface Post {
   bloggerName: string
 }
 
-export interface Video  {
+export interface Video {
   "id": number
   "title": string
   "author": string
