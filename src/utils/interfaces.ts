@@ -1,4 +1,4 @@
-export interface Bloggers {
+export interface Blogger {
   id: number
   name: string
   youtubeUrl: string

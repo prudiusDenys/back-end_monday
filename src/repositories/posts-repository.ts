@@ -1,6 +1,6 @@
 import {Post} from '../utils/interfaces';
 import {handlePostsErrors} from '../utils/handleErrors';
-import {bloggers} from './bloggers-repository';
+import {homework3} from './db';
 
 export let posts: Post[] = [
   {id: 1, title: 'Moscow', bloggerId: 11, bloggerName: 'Denis', content: 'blabla', shortDescription: 'aboutUs1'},
@@ -17,14 +17,16 @@ export const postsRepository = {
   findPost(id: number) {
     return  posts.find(post => post.id === id)
   },
-  createPost(data: any) {
+  async createPost(data: any) {
     const errorMessage = handlePostsErrors(data)
 
     if (errorMessage.errorsMessages.length) {
       return {error: errorMessage}
     }
 
-    const foundBlogger = bloggers.find(blogger => blogger.id === data.bloggerId)
+    //const foundBlogger = bloggers.find(blogger => blogger.id === data.bloggerId)
+    const foundBlogger = await homework3.findOne({id: data.bloggerId})
+
     if (foundBlogger) {
       const newPost = {
         id: +(new Date()),

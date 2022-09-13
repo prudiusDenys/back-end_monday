@@ -4,13 +4,13 @@ import {bloggersRepository} from '../repositories/bloggers-repository';
 
 export const bloggersRouter = Router({})
 
-bloggersRouter.get('/', (req: Request, res: Response) => {
-  const allBloggers = bloggersRepository.getAllBloggers()
+bloggersRouter.get('/', async (req: Request, res: Response) => {
+  const allBloggers = await bloggersRepository.getAllBloggers()
   res.status(200).json(allBloggers)
 })
 
-bloggersRouter.get('/:id', (req: Request, res: Response) => {
-  const blogger = bloggersRepository.findBlogger(+req.params.id)
+bloggersRouter.get('/:id', async (req: Request, res: Response) => {
+  const blogger = await bloggersRepository.findBlogger(+req.params.id)
 
   if (blogger) {
     res.status(200).json(blogger);
@@ -19,10 +19,10 @@ bloggersRouter.get('/:id', (req: Request, res: Response) => {
   }
 })
 
-bloggersRouter.post('/', authMiddleware, (req: Request, res: Response) => {
+bloggersRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
   const {name, youtubeUrl} = req.body
 
-  const data = bloggersRepository.createBlogger(name, youtubeUrl)
+  const data = await bloggersRepository.createBlogger(name, youtubeUrl)
 
   if (data?.error) {
     res.status(400).json(data.error)
@@ -31,23 +31,25 @@ bloggersRouter.post('/', authMiddleware, (req: Request, res: Response) => {
   }
 })
 
-bloggersRouter.put('/:id', authMiddleware, (req: Request, res: Response) => {
+bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   const id = +req.params.id;
   const {name, youtubeUrl} = req.body
 
-  const data = bloggersRepository.editBlogger(id, name, youtubeUrl)
+  const data = await bloggersRepository.editBlogger(id, name, youtubeUrl)
 
-  if (data?.error) {
+  if (data.error) {
     res.status(400).json(data.error)
-  } else if (data?.status === 'notFound') {
+  }
+  if (data.status === 'notFound') {
     res.sendStatus(404)
-  } else {
-    res.status(204)
+  }
+  if (data.status === 'success') {
+    res.sendStatus(204)
   }
 })
 
-bloggersRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
-  const data = bloggersRepository.deleteBlogger(+req.params.id)
+bloggersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
+  const data = await bloggersRepository.deleteBlogger(+req.params.id)
 
   if (data.status === 'success') {
     res.sendStatus(204)
