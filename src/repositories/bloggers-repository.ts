@@ -1,14 +1,14 @@
 import {Blogger} from '../utils/interfaces';
 import {handleBloggersErrors} from '../utils/handleErrors';
-import {homework3} from './db';
+import {homework3Blogs} from './db';
 
 
 export const bloggersRepository = {
   async getAllBloggers(): Promise<Blogger[]> {
-    return await homework3.find({}).toArray()
+    return await homework3Blogs.find({}).toArray()
   },
   async findBlogger(id: number): Promise<Blogger | null> {
-    return await homework3.findOne({id})
+    return await homework3Blogs.findOne({id})
   },
   async createBlogger(name: string, youtubeUrl: string) {
     const errorMessage = handleBloggersErrors(name, youtubeUrl);
@@ -23,7 +23,8 @@ export const bloggersRepository = {
       youtubeUrl,
       createdAt: '2022-09-13T18:26:09.391Z'
     }
-    await homework3.insertOne(newUser)
+
+    await homework3Blogs.insertOne(newUser)
 
     return {value: newUser}
   },
@@ -34,7 +35,7 @@ export const bloggersRepository = {
       return {error: errorMessage}
     }
 
-    const res = await homework3.updateOne({id}, {
+    const res = await homework3Blogs.updateOne({id}, {
       $set: {name, youtubeUrl}
     })
 
@@ -45,7 +46,7 @@ export const bloggersRepository = {
     }
   },
   async deleteBlogger(id: number) {
-    const res = await homework3.deleteOne({id})
+    const res = await homework3Blogs.deleteOne({id})
     if (res.deletedCount > 0) {
       return {status: 'success'}
     } else {

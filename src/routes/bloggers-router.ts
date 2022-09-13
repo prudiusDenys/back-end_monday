@@ -24,7 +24,7 @@ bloggersRouter.post('/', authMiddleware, async (req: Request, res: Response) => 
 
   const data = await bloggersRepository.createBlogger(name, youtubeUrl)
 
-  if (data?.error) {
+  if (data.error) {
     res.status(400).json(data.error)
   } else {
     res.status(201).json(data.value)

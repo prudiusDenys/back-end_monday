@@ -1,5 +1,5 @@
 import {ErrorMessage, Post} from './interfaces';
-import {homework3} from '../repositories/db';
+import {homework3Blogs} from '../repositories/db';
 
 export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   const errorMessage: ErrorMessage = {
@@ -55,7 +55,7 @@ export const handlePostsErrors = ({title, shortDescription, content, bloggerId}:
   }
 
   // const foundBlogger = bloggers.find(blogger => blogger.id === bloggerId)
-  const foundBlogger = homework3.findOne({id: bloggerId})
+  const foundBlogger = homework3Blogs.findOne({id: bloggerId})
   if(!foundBlogger){
     errorMessage.errorsMessages.push({
       message: "bloggerId is incorrect",

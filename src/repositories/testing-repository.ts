@@ -1,12 +1,11 @@
 import {videos} from './videos-repository';
-import {posts} from './posts-repository';
-import {homework3} from './db';
+import {homework3Blogs, homework3Posts} from './db';
 
 
 export const testingRepository = {
   async removeAllData() {
-    posts.splice(0, posts.length)
     videos.splice(0, videos.length)
-    await homework3.deleteMany({})
+    await homework3Posts.deleteMany({})
+    await homework3Blogs.deleteMany({})
   }
 }
