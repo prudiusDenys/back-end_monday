@@ -15,7 +15,7 @@ app.use(cors(), bodyParser.json())
 // если что-то начинается на /posts, то тогда
 // router перехватывает управление и смотрит какая дальше идет часть и потом дергает конкретный обработчик
 app.use('/videos', videoRouter)
-app.use('/bloggers', bloggersRouter)
+app.use('/blogs', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/testing', testingRouter)
 
