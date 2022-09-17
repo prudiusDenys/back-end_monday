@@ -1,17 +1,17 @@
 export interface Blogger {
-  id: number
+  id: string
   name: string
   youtubeUrl: string
   createdAt: string
 }
 
 export interface Post {
-  id: number
+  id: string
   title: string
   shortDescription: string
   content: string
-  bloggerId: number
-  bloggerName: string
+  blogId: number
+  blogName: string
 }
 
 export interface Video {

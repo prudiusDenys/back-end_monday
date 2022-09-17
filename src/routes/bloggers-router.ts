@@ -16,7 +16,7 @@ bloggersRouter.get('/', async (req: Request, res: Response) => {
 })
 
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
-  const blogger: any = await bloggersRepository.findBlogger(+req.params.id)
+  const blogger: any = await bloggersRepository.findBlogger(req.params.id)
 
   if (blogger) {
     delete blogger['_id']
@@ -40,7 +40,7 @@ bloggersRouter.post('/', authMiddleware, async (req: Request, res: Response) => 
 })
 
 bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) => {
-  const id = +req.params.id;
+  const id = req.params.id;
   const {name, youtubeUrl} = req.body
 
   const data = await bloggersRepository.editBlogger(id, name, youtubeUrl)
@@ -57,7 +57,7 @@ bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) =
 })
 
 bloggersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-  const data = await bloggersRepository.deleteBlogger(+req.params.id)
+  const data = await bloggersRepository.deleteBlogger(req.params.id)
 
   if (data.status === 'success') {
     res.sendStatus(204)

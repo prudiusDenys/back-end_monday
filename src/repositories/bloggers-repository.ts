@@ -7,7 +7,7 @@ export const bloggersRepository = {
   async getAllBloggers(): Promise<Blogger[]> {
     return await homework3Blogs.find({}).toArray()
   },
-  async findBlogger(id: number): Promise<Blogger | null> {
+  async findBlogger(id: string): Promise<Blogger | null> {
     return await homework3Blogs.findOne({id})
   },
   async createBlogger(name: string, youtubeUrl: string) {
@@ -18,7 +18,7 @@ export const bloggersRepository = {
     }
 
     const newUser = {
-      id: +(new Date()),
+      id: (new Date().toString()),
       name,
       youtubeUrl,
       createdAt: '2022-09-13T18:26:09.391Z'
@@ -28,7 +28,7 @@ export const bloggersRepository = {
 
     return {value: newUser}
   },
-  async editBlogger(id: number, name: string, youtubeUrl: string) {
+  async editBlogger(id: string, name: string, youtubeUrl: string) {
     const errorMessage = handleBloggersErrors(name, youtubeUrl);
 
     if (errorMessage.errorsMessages.length) {
@@ -45,7 +45,7 @@ export const bloggersRepository = {
       return {status: 'success'}
     }
   },
-  async deleteBlogger(id: number) {
+  async deleteBlogger(id: string) {
     const res = await homework3Blogs.deleteOne({id})
     if (res.deletedCount > 0) {
       return {status: 'success'}
