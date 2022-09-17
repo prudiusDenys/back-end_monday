@@ -22,7 +22,7 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   }
   return errorMessage
 }
-export const handlePostsErrors = ({title, shortDescription, content, bloggerId}: Post) => {
+export const handlePostsErrors = ({title, shortDescription, content, blogId}: Post) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
   }
@@ -47,7 +47,7 @@ export const handlePostsErrors = ({title, shortDescription, content, bloggerId}:
     })
   }
 
-  if (!bloggerId || !Number.isInteger(bloggerId) || typeof bloggerId !== 'number') {
+  if (!blogId || typeof blogId !== 'string') {
     errorMessage.errorsMessages.push({
       message: "bloggerId is incorrect",
       field: "bloggerId"
@@ -55,8 +55,8 @@ export const handlePostsErrors = ({title, shortDescription, content, bloggerId}:
   }
 
   // const foundBlogger = bloggers.find(blogger => blogger.id === bloggerId)
-  const foundBlogger = homework3Blogs.findOne({id: bloggerId})
-  if(!foundBlogger){
+  const foundBlogger = homework3Blogs.findOne({id: blogId})
+  if (!foundBlogger) {
     errorMessage.errorsMessages.push({
       message: "bloggerId is incorrect",
       field: "bloggerId"

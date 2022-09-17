@@ -6,7 +6,7 @@ export const postsRepository = {
   async getAllPosts(): Promise<Post[]> {
     return homework3Posts.find({}).toArray()
   },
-  async findPost(id: number): Promise<Post | null> {
+  async findPost(id: string): Promise<Post | null> {
     return homework3Posts.findOne({id})
   },
   async createPost(data: any) {
@@ -20,7 +20,7 @@ export const postsRepository = {
 
     if (foundBlogger) {
       const newPost = {
-        id: +(new Date()),
+        id: (new Date()),
         bloggerName: foundBlogger.name,
         ...data
       }
@@ -29,7 +29,7 @@ export const postsRepository = {
       return {value: newPost}
     }
   },
-  async editPost(id: number, data: any) {
+  async editPost(id: string, data: any) {
     const errorMessage = handlePostsErrors(data);
 
     if (errorMessage.errorsMessages.length) {
@@ -41,12 +41,12 @@ export const postsRepository = {
       post.title = data.title
       post.shortDescription = data.shortDescription
       post.content = data.content
-      post.bloggerId = data.bloggerId
+      post.blogId = data.bloggerId
       return {status: 'success'}
     }
     return {status: 'notFound'}
   },
-  async deletePost(id: number) {
+  async deletePost(id: string) {
     const res = await homework3Posts.deleteOne({id})
     if (res.deletedCount > 0) {
       return {status: 'success'}
