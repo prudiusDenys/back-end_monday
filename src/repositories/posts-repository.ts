@@ -22,7 +22,7 @@ export const postsRepository = {
     if (foundBlogger) {
       const newPost = {
         id: date.toString(),
-        bloggerName: foundBlogger.name,
+        blogName: foundBlogger.name,
         ...data
       }
       await homework3Posts.insertOne(newPost)
