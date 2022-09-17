@@ -19,11 +19,11 @@ export const bloggersRepository = {
 
     const date = Number(new Date())
 
-    const newUser = {
+    const newUser: Blogger = {
       id: date.toString(),
       name,
       youtubeUrl,
-      createdAt: '2022-09-13T18:26:09.391Z'
+      createdAt: new Date().toISOString(),
     }
 
     await homework3Blogs.insertOne(newUser)

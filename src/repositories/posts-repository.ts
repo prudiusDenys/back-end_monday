@@ -10,6 +10,7 @@ export const postsRepository = {
     return homework3Posts.findOne({id})
   },
   async createPost(data: any) {
+    debugger
     const errorMessage = handlePostsErrors(data)
 
     if (errorMessage.errorsMessages.length) {
@@ -20,11 +21,16 @@ export const postsRepository = {
     const date = Number(new Date())
 
     if (foundBlogger) {
-      const newPost = {
+      const newPost: Post = {
         id: date.toString(),
         blogName: foundBlogger.name,
-        ...data
+        createdAt: new Date().toISOString(),
+        title: data.title,
+        blogId: data.blogId,
+        content: data.content,
+        shortDescription: data.shortDescription
       }
+
       await homework3Posts.insertOne(newPost)
 
       return {value: newPost}
