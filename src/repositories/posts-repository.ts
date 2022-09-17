@@ -16,11 +16,12 @@ export const postsRepository = {
       return {error: errorMessage}
     }
 
-    const foundBlogger = await homework3Blogs.findOne({id: data.bloggerId})
+    const foundBlogger = await homework3Blogs.findOne({id: data.blogId})
+    const date = Number(new Date())
 
     if (foundBlogger) {
       const newPost = {
-        id: (new Date()),
+        id: date.toString(),
         bloggerName: foundBlogger.name,
         ...data
       }

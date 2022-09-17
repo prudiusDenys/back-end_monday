@@ -12,6 +12,7 @@ export interface Post {
   content: string
   blogId: string
   blogName: string
+  createdAt: string
 }
 
 export interface Video {

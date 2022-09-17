@@ -34,6 +34,8 @@ postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
   } else if (data.value) {
     delete data.value['_id']
     res.status(201).json(data.value)
+  } else {
+    res.sendStatus(404)
   }
 })
 

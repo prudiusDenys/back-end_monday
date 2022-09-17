@@ -17,8 +17,10 @@ export const bloggersRepository = {
       return {error: errorMessage}
     }
 
+    const date = Number(new Date())
+
     const newUser = {
-      id: (new Date().toString()),
+      id: date.toString(),
       name,
       youtubeUrl,
       createdAt: '2022-09-13T18:26:09.391Z'
