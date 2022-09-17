@@ -10,7 +10,6 @@ export const postsRepository = {
     return homework3Posts.findOne({id})
   },
   async createPost(data: any) {
-    debugger
     const errorMessage = handlePostsErrors(data)
 
     if (errorMessage.errorsMessages.length) {
@@ -48,7 +47,7 @@ export const postsRepository = {
       post.title = data.title
       post.shortDescription = data.shortDescription
       post.content = data.content
-      post.blogId = data.bloggerId
+      post.blogId = data.blogId
       return {status: 'success'}
     }
     return {status: 'notFound'}
