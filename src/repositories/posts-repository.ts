@@ -2,6 +2,13 @@ import {Post} from '../utils/interfaces';
 import {handlePostsErrors} from '../utils/handleErrors';
 import {homework3Blogs, homework3Posts} from './db';
 
+export interface EditPostInputValue {
+  title: string
+  shortDescription: string
+  content: string
+  blogId: string
+}
+
 export const postsRepository = {
   async getAllPosts(): Promise<Post[]> {
     return homework3Posts.find({}).toArray()
@@ -35,7 +42,7 @@ export const postsRepository = {
       return {value: newPost}
     }
   },
-  async editPost(id: string, data: any) {
+  async editPost(id: string, data: EditPostInputValue) {
     const errorMessage = handlePostsErrors(data);
 
     if (errorMessage.errorsMessages.length) {
@@ -44,11 +51,18 @@ export const postsRepository = {
 
     let post = await homework3Posts.findOne({id})
     if (post) {
-      post.title = data.title
-      post.shortDescription = data.shortDescription
-      post.content = data.content
-      post.blogId = data.blogId
-      return {status: 'success'}
+      const res = await homework3Posts.updateOne({id}, {
+        $set: {
+          title: data.title,
+          shortDescription: data.shortDescription,
+          content: data.content,
+          blogId: data.blogId
+        }
+      })
+      if (res.matchedCount) {
+        return {status: 'success'}
+      }
+      return {status: 'notFound'}
     }
     return {status: 'notFound'}
   },
