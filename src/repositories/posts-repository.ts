@@ -1,7 +1,6 @@
 import {Post} from '../utils/interfaces';
 import {handlePostsErrors} from '../utils/handleErrors';
 import {homework3Blogs, homework3Posts} from './db';
-import {log} from 'util';
 
 export interface PostInputValue {
   title: string
@@ -25,7 +24,6 @@ export const postsRepository = {
     }
 
     const foundBlogger = await homework3Blogs.findOne({id: data.blogId})
-    console.log(foundBlogger)
     const date = Number(new Date())
 
     if (foundBlogger) {

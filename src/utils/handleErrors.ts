@@ -2,6 +2,10 @@ import {ErrorMessage, Post} from './interfaces';
 import {homework3Blogs} from '../repositories/db';
 import {PostInputValue} from '../repositories/posts-repository';
 
+interface IError {
+
+}
+
 export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []

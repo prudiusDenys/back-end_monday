@@ -2,7 +2,6 @@ import {Blogger} from '../utils/interfaces';
 import {handleBloggersErrors} from '../utils/handleErrors';
 import {homework3Blogs} from './db';
 
-
 export const bloggersRepository = {
   async getAllBloggers(): Promise<Blogger[]> {
     return await homework3Blogs.find({}).toArray()
@@ -40,11 +39,10 @@ export const bloggersRepository = {
     const res = await homework3Blogs.updateOne({id}, {
       $set: {name, youtubeUrl}
     })
-
-    if (!res.matchedCount) {
-      return {status: 'notFound'}
-    } else {
+    if (res.matchedCount) {
       return {status: 'success'}
+    } else {
+      return {status: 'notFound'}
     }
   },
   async deleteBlogger(id: string) {
