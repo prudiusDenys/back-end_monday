@@ -1,8 +1,9 @@
 import {Post} from '../utils/interfaces';
 import {handlePostsErrors} from '../utils/handleErrors';
 import {homework3Blogs, homework3Posts} from './db';
+import {log} from 'util';
 
-export interface EditPostInputValue {
+export interface PostInputValue {
   title: string
   shortDescription: string
   content: string
@@ -16,7 +17,7 @@ export const postsRepository = {
   async findPost(id: string): Promise<Post | null> {
     return homework3Posts.findOne({id})
   },
-  async createPost(data: any) {
+  async createPost(data: PostInputValue) {
     const errorMessage = handlePostsErrors(data)
 
     if (errorMessage.errorsMessages.length) {
@@ -24,6 +25,7 @@ export const postsRepository = {
     }
 
     const foundBlogger = await homework3Blogs.findOne({id: data.blogId})
+    console.log(foundBlogger)
     const date = Number(new Date())
 
     if (foundBlogger) {
@@ -41,8 +43,9 @@ export const postsRepository = {
 
       return {value: newPost}
     }
+    return foundBlogger
   },
-  async editPost(id: string, data: EditPostInputValue) {
+  async editPost(id: string, data: PostInputValue) {
     const errorMessage = handlePostsErrors(data);
 
     if (errorMessage.errorsMessages.length) {

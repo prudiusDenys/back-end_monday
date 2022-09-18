@@ -1,6 +1,6 @@
 import {ErrorMessage, Post} from './interfaces';
 import {homework3Blogs} from '../repositories/db';
-import {EditPostInputValue} from '../repositories/posts-repository';
+import {PostInputValue} from '../repositories/posts-repository';
 
 export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   const errorMessage: ErrorMessage = {
@@ -23,7 +23,7 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   }
   return errorMessage
 }
-export const handlePostsErrors = ({title, shortDescription, content, blogId}: EditPostInputValue) => {
+export const handlePostsErrors = ({title, shortDescription, content, blogId}: PostInputValue) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
   }
@@ -50,8 +50,8 @@ export const handlePostsErrors = ({title, shortDescription, content, blogId}: Ed
 
   if (!blogId || typeof blogId !== 'string') {
     errorMessage.errorsMessages.push({
-      message: "bloggerId is incorrect",
-      field: "bloggerId"
+      message: "blogId is incorrect",
+      field: "blogId"
     })
   }
 
