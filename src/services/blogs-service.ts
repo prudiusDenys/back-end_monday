@@ -1,14 +1,8 @@
 import {Blogger} from '../utils/interfaces';
 import {handleBloggersErrors} from '../utils/handleErrors';
-import {homework3Blogs} from './db';
+import {blogsRepository} from '../repositories/blogs-repository/blogs-repository';
 
-export const bloggersRepository = {
-  async getAllBloggers(): Promise<Blogger[]> {
-    return await homework3Blogs.find({}).toArray()
-  },
-  async findBlogger(id: string): Promise<Blogger | null> {
-    return await homework3Blogs.findOne({id})
-  },
+export const blogsService = {
   async createBlogger(name: string, youtubeUrl: string) {
     const errorMessage = handleBloggersErrors(name, youtubeUrl);
 
@@ -25,7 +19,7 @@ export const bloggersRepository = {
       createdAt: new Date().toISOString(),
     }
 
-    await homework3Blogs.insertOne(newUser)
+    await blogsRepository.createBlogger(newUser)
 
     return {value: newUser}
   },
@@ -36,18 +30,18 @@ export const bloggersRepository = {
       return {error: errorMessage}
     }
 
-    const res = await homework3Blogs.updateOne({id}, {
-      $set: {name, youtubeUrl}
-    })
-    if (res.matchedCount) {
+    const res = await blogsRepository.editBlogger(id, name, youtubeUrl)
+
+    if (res) {
       return {status: 'success'}
     } else {
       return {status: 'notFound'}
     }
   },
   async deleteBlogger(id: string) {
-    const res = await homework3Blogs.deleteOne({id})
-    if (res.deletedCount > 0) {
+    const res = await blogsRepository.deleteBlogger(id)
+
+    if (res > 0) {
       return {status: 'success'}
     } else {
       return {status: 'notFound'}

@@ -1,12 +1,13 @@
 import {Request, Response, Router} from 'express';
 import {authMiddleware} from '../middlewares/authMiddleware';
-import {postsRepository} from '../repositories/posts-repository';
 import {removeMongoId} from '../utils/normalizeData';
+import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
+import {postsService} from '../services/posts-service';
 
 export const postsRouter = Router({})
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-  const posts = await postsRepository.getAllPosts()
+  const posts = await postsRepositoryQuery.getAllPosts()
 
   const normalizedPosts = removeMongoId(posts)
 
@@ -14,7 +15,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 })
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-  const post = await postsRepository.findPost(req.params.id)
+  const post = await postsRepositoryQuery.findPost(req.params.id)
 
   if (post) {
     const normalizedPost = removeMongoId(post)
@@ -25,13 +26,12 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
-  const data: any = await postsRepository.createPost(req.body)
+  const data: any = await postsService.createPost(req.body)
 
-  if(data?.value){
+  if (data?.value) {
     const normalizedPost = removeMongoId(data.value)
     res.status(201).json(normalizedPost)
-  }
-  if(data?.error){
+  } else if (data?.error) {
     res.status(400).json(data.error)
   } else {
     res.sendStatus(404)
@@ -39,7 +39,7 @@ postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
 })
 
 postsRouter.put('/:id', authMiddleware, async (req: Request, res: Response) => {
-  const data: any = await postsRepository.editPost(req.params.id, req.body)
+  const data: any = await postsService.editPost(req.params.id, req.body)
 
   if (data.status === 'success') {
     res.sendStatus(204)
@@ -53,7 +53,7 @@ postsRouter.put('/:id', authMiddleware, async (req: Request, res: Response) => {
 })
 
 postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-  const status = await postsRepository.deletePost(req.params.id)
+  const status = await postsService.deletePost(req.params.id)
 
   if (status.status === 'success') {
     res.sendStatus(204)

@@ -23,7 +23,7 @@ export interface Video {
   "minAgeRestriction": null | number
   "createdAt": string
   "publicationDate": string
-  "availableResolutions": Array<string>
+  "availableResolutions": string[]
 }
 
 interface ErrorsMessages {
@@ -32,5 +32,5 @@ interface ErrorsMessages {
 }
 
 export interface ErrorMessage {
-  errorsMessages: Array<ErrorsMessages>
+  errorsMessages: ErrorsMessages[]
 }

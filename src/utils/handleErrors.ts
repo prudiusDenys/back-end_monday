@@ -1,6 +1,6 @@
 import {ErrorMessage, Post} from './interfaces';
 import {homework3Blogs} from '../repositories/db';
-import {PostInputValue} from '../repositories/posts-repository';
+import {PostInputValue} from '../repositories/posts-repository/posts-repository';
 
 interface IError {
 
