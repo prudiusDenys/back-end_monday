@@ -1,10 +1,6 @@
-import {ErrorMessage, Post} from './interfaces';
+import {ErrorMessage} from './interfaces';
 import {homework3Blogs} from '../repositories/db';
 import {PostInputValue} from '../repositories/posts-repository/posts-repository';
-
-interface IError {
-
-}
 
 export const handleBloggersErrors = (name: string, youtubeUrl: string) => {
   const errorMessage: ErrorMessage = {
@@ -59,7 +55,6 @@ export const handlePostsErrors = ({title, shortDescription, content, blogId}: Po
     })
   }
 
-  // const foundBlogger = bloggers.find(blogger => blogger.id === bloggerId)
   const foundBlogger = homework3Blogs.findOne({id: blogId})
   if (!foundBlogger) {
     errorMessage.errorsMessages.push({
