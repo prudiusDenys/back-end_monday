@@ -1,8 +1,8 @@
-import {Blogger} from '../../utils/interfaces';
+import {Blog} from '../../utils/interfaces';
 import {homework3Blogs} from '../db';
 
 export const blogsRepository = {
-  async createBlogger(newUser: Blogger) {
+  async createBlogger(newUser: Blog) {
     await homework3Blogs.insertOne(newUser)
   },
   async editBlogger(id: string, name: string, youtubeUrl: string) {

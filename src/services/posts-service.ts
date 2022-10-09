@@ -6,6 +6,7 @@ import {Post} from '../utils/interfaces';
 
 export const postsService = {
   async createPost(data: PostInputValue) {
+    debugger
     const errorMessage = handlePostsErrors(data)
 
     if (errorMessage.errorsMessages.length) {

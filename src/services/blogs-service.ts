@@ -1,4 +1,4 @@
-import {Blogger} from '../utils/interfaces';
+import {Blog} from '../utils/interfaces';
 import {handleBloggersErrors} from '../utils/handleErrors';
 import {blogsRepository} from '../repositories/blogs-repository/blogs-repository';
 
@@ -12,7 +12,7 @@ export const blogsService = {
 
     const date = Number(new Date())
 
-    const newUser: Blogger = {
+    const newUser: Blog = {
       id: date.toString(),
       name,
       youtubeUrl,

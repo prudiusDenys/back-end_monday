@@ -9,3 +9,13 @@ export const removeMongoId = (data: any) => {
     return data
   }
 }
+
+export const normalizeAllBlogsAndPosts = (data: any) => {
+  return {
+    pagesCount: data.pagesCount,
+    page: +data.pageNumber,
+    pageSize: +data.pageSize,
+    totalCount: data.totalCount,
+    items: removeMongoId(data.items)
+  }
+}

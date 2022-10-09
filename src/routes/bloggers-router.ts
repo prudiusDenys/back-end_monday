@@ -1,17 +1,29 @@
 import {Request, Response, Router} from 'express';
 import {authMiddleware} from '../middlewares/authMiddleware';
-import {removeMongoId} from '../utils/normalizeData';
+import {normalizeAllBlogsAndPosts, removeMongoId} from '../utils/normalizeData';
 import {blogsService} from '../services/blogs-service';
 import {blogsRepositoryQuery} from '../repositories/blogs-repository/blogs-repositoryQuery';
+import {postsService} from '../services/posts-service';
 
 export const bloggersRouter = Router({})
 
 bloggersRouter.get('/', async (req: Request, res: Response) => {
-  const allBloggers = await blogsRepositoryQuery.getAllBloggers()
+  const data = await blogsRepositoryQuery.getAllBloggers(req.query)
 
-  const normalizedBlogs = removeMongoId(allBloggers)
+  const normalizedBlogs = normalizeAllBlogsAndPosts(data)
 
   res.status(200).json(normalizedBlogs)
+})
+
+bloggersRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
+  const data = await blogsRepositoryQuery.geAllPostsOfBlog(req.query, req.params.blogId)
+
+  if (data.items.length) {
+    const normalizedPostsOfBlog = normalizeAllBlogsAndPosts(data)
+    res.status(200).json(normalizedPostsOfBlog)
+  } else {
+    res.sendStatus(404)
+  }
 })
 
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
@@ -38,6 +50,19 @@ bloggersRouter.post('/', authMiddleware, async (req: Request, res: Response) => 
   }
 })
 
+bloggersRouter.post('/:blogId/posts', authMiddleware, async (req: Request, res: Response) => {
+  const data: any = await postsService.createPost({...req.body, blogId: req.params.blogId})
+
+  if (data?.value) {
+    const normalizedPost = removeMongoId(data.value)
+    res.status(201).json(normalizedPost)
+  } else if (data?.error) {
+    res.status(400).json(data.error)
+  } else {
+    res.sendStatus(404)
+  }
+})
+
 bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   const id = req.params.id;
   const {name, youtubeUrl} = req.body
@@ -47,11 +72,11 @@ bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) =
   if (data.status === 'success') {
     res.sendStatus(204)
   }
-  if (data.error) {
-    res.status(400).json(data.error)
-  }
   if (data.status === 'notFound') {
     res.sendStatus(404)
+  }
+  if (data.error) {
+    res.status(400).json(data.error)
   }
 })
 
