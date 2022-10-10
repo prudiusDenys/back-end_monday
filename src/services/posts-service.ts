@@ -22,7 +22,7 @@ export const postsService = {
         blogName: foundBlogger.name,
         createdAt: new Date().toISOString(),
         title: data.title,
-        blogId: data.blogId,
+        blogId: blogId,
         content: data.content,
         shortDescription: data.shortDescription
       }
