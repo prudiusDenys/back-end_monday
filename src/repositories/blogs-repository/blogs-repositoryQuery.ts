@@ -21,7 +21,8 @@ export const blogsRepositoryQuery = {
       pageSize = 10
     } = data
 
-    const totalCount = await homework3Blogs.countDocuments()
+    const allBlogs = await homework3Blogs
+      .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {}).toArray()
 
     const items = await homework3Blogs
       .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {})
@@ -33,9 +34,9 @@ export const blogsRepositoryQuery = {
     return {
       pageSize: pageSize,
       pageNumber,
-      totalCount,
+      totalCount: allBlogs.length,
       items,
-      pagesCount: calcPagesCount(totalCount, +pageSize)
+      pagesCount: calcPagesCount(allBlogs.length, +pageSize)
     }
   },
   async geAllPostsOfBlog(data: any, blogId: string) {
@@ -46,7 +47,7 @@ export const blogsRepositoryQuery = {
       pageSize = 10,
     } = data
 
-    const totalCount = await homework3Blogs.countDocuments()
+    const allPostsByBlogger = await homework3Posts.find({blogId}).toArray()
 
     const items = await homework3Posts
       .find({blogId})
@@ -58,9 +59,9 @@ export const blogsRepositoryQuery = {
     return {
       pageSize,
       pageNumber,
-      totalCount,
+      totalCount: allPostsByBlogger.length,
       items,
-      pagesCount: calcPagesCount(totalCount, +pageSize)
+      pagesCount: calcPagesCount(allPostsByBlogger.length, +pageSize)
     }
   },
   async findBlogger(id: string): Promise<Blog | null> {
