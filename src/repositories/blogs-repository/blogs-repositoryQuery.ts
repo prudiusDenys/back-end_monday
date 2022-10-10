@@ -7,7 +7,7 @@ export interface QueryData {
   sortDirection: string
   sortBy: string
   pagesCount: number
-  page: number
+  pageNumber: number
   pageSize: number
   totalCount: number
 }
@@ -17,23 +17,25 @@ export const blogsRepositoryQuery = {
     const {
       sortDirection = 'desc',
       sortBy = 'createdAt',
-      page =1,
+      pageNumber = 1,
       pageSize = 10
     } = data
 
+    const totalCount = await homework3Blogs.countDocuments()
+
     const items = await homework3Blogs
       .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {})
-      .skip(calcSkipPages(+page, +pageSize))
+      .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
       .toArray()
 
     return {
       pageSize: pageSize,
-      pageNumber: page,
-      totalCount: items.length,
+      pageNumber,
+      totalCount,
       items,
-      pagesCount: calcPagesCount(items.length, +pageSize)
+      pagesCount: calcPagesCount(totalCount, +pageSize)
     }
   },
   async geAllPostsOfBlog(data: any, blogId: string) {
@@ -50,7 +52,7 @@ export const blogsRepositoryQuery = {
       .find({blogId})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
-      .sort({sortBy: sortDirection == 'asc' ? 1 : -1})
+      .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
       .toArray()
 
     return {
