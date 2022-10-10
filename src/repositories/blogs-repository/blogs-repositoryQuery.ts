@@ -2,7 +2,7 @@ import {Blog} from '../../utils/interfaces';
 import {homework3Blogs, homework3Posts} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 
-interface QueryData {
+export interface QueryData {
   searchNameTerm: string
   pagesCount: number
   page: number
@@ -11,30 +11,26 @@ interface QueryData {
 }
 
 export const blogsRepositoryQuery = {
-  async getAllBloggers(data: any) {
-    const {
-      searchNameTerm = null,
-      sortBy = 'createdAt',
-      sortDirection = 'desc',
-      pageNumber = 1,
-      pageSize = 10
-    } = data
-
-    const totalCount = await homework3Blogs.countDocuments()
+  async getAllBloggers(data: QueryData) {
+    const params = {
+      sortBy: 'createdAt',
+      sortDirection: 'desc',
+      ...data
+    }
 
     const items = await homework3Blogs
-      .find(searchNameTerm ? {'name': {$regex: new RegExp(searchNameTerm, 'i')}} : {})
-      .skip(calcSkipPages(+pageNumber, +pageSize))
-      .limit(+pageSize)
-      .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
+      .find(params.searchNameTerm ? {'name': {$regex: new RegExp(params.searchNameTerm, 'i')}} : {})
+      .skip(calcSkipPages(+params.page, +params.pageSize))
+      .limit(+params.pageSize)
+      .sort({[params.sortBy]: params.sortDirection == 'asc' ? 1 : -1})
       .toArray()
 
     return {
-      pageSize,
-      pageNumber,
-      totalCount,
+      pageSize: params.pageSize,
+      pageNumber: params.page,
+      totalCount: items.length,
       items,
-      pagesCount: calcPagesCount(totalCount, +pageSize)
+      pagesCount: calcPagesCount(items.length, +params.pageSize)
     }
   },
   async geAllPostsOfBlog(data: any, blogId: string) {

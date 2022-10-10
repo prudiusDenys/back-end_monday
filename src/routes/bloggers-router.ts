@@ -1,13 +1,13 @@
-import {Request, Response, Router} from 'express';
+import {Request, RequestHandler, Response, Router} from 'express';
 import {authMiddleware} from '../middlewares/authMiddleware';
 import {normalizeAllBlogsAndPosts, removeMongoId} from '../utils/normalizeData';
 import {blogsService} from '../services/blogs-service';
-import {blogsRepositoryQuery} from '../repositories/blogs-repository/blogs-repositoryQuery';
+import {blogsRepositoryQuery, QueryData} from '../repositories/blogs-repository/blogs-repositoryQuery';
 import {postsService} from '../services/posts-service';
 
 export const bloggersRouter = Router({})
 
-bloggersRouter.get('/', async (req: Request, res: Response) => {
+bloggersRouter.get('/', async (req: Request<unknown, unknown, unknown, QueryData >, res: Response) => {
   const data = await blogsRepositoryQuery.getAllBloggers(req.query)
 
   const normalizedBlogs = normalizeAllBlogsAndPosts(data)
