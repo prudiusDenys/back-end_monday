@@ -3,8 +3,8 @@ import {handleBloggersErrors} from '../utils/handleErrors';
 import {blogsRepository} from '../repositories/blogs-repository/blogs-repository';
 
 export const blogsService = {
-  async createBlogger(name: string, youtubeUrl: string) {
-    const errorMessage = handleBloggersErrors(name, youtubeUrl);
+  async createBlogger(name: string, youtubeUrl: string, blogId: string) {
+    const errorMessage = handleBloggersErrors(name, youtubeUrl, blogId);
 
     if (errorMessage.errorsMessages.length) {
       return {error: errorMessage}
@@ -23,8 +23,8 @@ export const blogsService = {
 
     return {value: newUser}
   },
-  async editBlogger(id: string, name: string, youtubeUrl: string) {
-    const errorMessage = handleBloggersErrors(name, youtubeUrl);
+  async editBlogger(id: string, name: string, youtubeUrl: string, blogId: string) {
+    const errorMessage = handleBloggersErrors(name, youtubeUrl, blogId);
 
     if (errorMessage.errorsMessages.length) {
       return {error: errorMessage}

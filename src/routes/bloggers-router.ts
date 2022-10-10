@@ -40,7 +40,7 @@ bloggersRouter.get('/:id', async (req: Request, res: Response) => {
 bloggersRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
   const {name, youtubeUrl} = req.body
 
-  const data: any = await blogsService.createBlogger(name, youtubeUrl)
+  const data: any = await blogsService.createBlogger(name, youtubeUrl, req.params['blogId'])
 
   if (data?.value) {
     const normalizedBlog = removeMongoId(data.value)
@@ -67,7 +67,7 @@ bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) =
   const id = req.params.id;
   const {name, youtubeUrl} = req.body
 
-  const data = await blogsService.editBlogger(id, name, youtubeUrl)
+  const data = await blogsService.editBlogger(id, name, youtubeUrl, req.params['blogId'])
 
   if (data.status === 'success') {
     res.sendStatus(204)
