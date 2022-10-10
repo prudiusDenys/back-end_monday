@@ -24,7 +24,7 @@ export const blogsService = {
     return {value: newUser}
   },
   async editBlogger(id: string, name: string, youtubeUrl: string) {
-    const errorMessage = handleBloggersErrors(name, youtubeUrl, id);
+    const errorMessage = handleBloggersErrors(name, youtubeUrl);
 
     if (errorMessage.errorsMessages.length) {
       return {error: errorMessage}
