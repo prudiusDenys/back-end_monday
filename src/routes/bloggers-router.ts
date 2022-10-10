@@ -61,6 +61,7 @@ bloggersRouter.post('/:blogId/posts', authMiddleware, async (req: Request, res: 
   } else {
     res.sendStatus(404)
   }
+
 })
 
 bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) => {
