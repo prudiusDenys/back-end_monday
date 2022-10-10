@@ -48,7 +48,15 @@ export const handlePostsErrors = ({title, shortDescription, content, blogId}: Po
     })
   }
 
-  if (!blogId || typeof blogId !== 'string') {
+  if (!blogId || typeof blogId !== 'string' || blogId.includes('-')) {
+    const isUIDblogId = blogId.includes('-')
+    if (isUIDblogId){
+      const splitedId = blogId.split('-').join('');
+      if(splitedId.length < 14){
+        return
+      }
+    }
+
     errorMessage.errorsMessages.push({
       message: "blogId is incorrect",
       field: "blogId"
