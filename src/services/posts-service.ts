@@ -6,7 +6,6 @@ import {Post} from '../utils/interfaces';
 
 export const postsService = {
   async createPost(data: PostInputValue, blogId: string) {
-    debugger
     const errorMessage = handlePostsErrors(data)
 
     if (errorMessage.errorsMessages.length) {
@@ -40,6 +39,7 @@ export const postsService = {
     }
 
     let post = await postsRepositoryQuery.findPost(id)
+
     if (post) {
       const res = await postsRepository.editPost(id, data)
       if (res) {

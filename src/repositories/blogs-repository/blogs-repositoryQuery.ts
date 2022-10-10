@@ -1,19 +1,9 @@
-import {Blog} from '../../utils/interfaces';
+import {Blog, QueryParams} from '../../utils/interfaces';
 import {homework3Blogs, homework3Posts} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 
-export interface QueryData {
-  searchNameTerm: string
-  sortDirection: string
-  sortBy: string
-  pagesCount: number
-  pageNumber: number
-  pageSize: number
-  totalCount: number
-}
-
 export const blogsRepositoryQuery = {
-  async getAllBloggers(data: QueryData) {
+  async getAllBloggers(data: QueryParams) {
     const {
       sortDirection = 'desc',
       sortBy = 'createdAt',
@@ -39,7 +29,7 @@ export const blogsRepositoryQuery = {
       pagesCount: calcPagesCount(allBlogs.length, +pageSize)
     }
   },
-  async geAllPostsOfBlog(data: any, blogId: string) {
+  async geAllPostsOfBlog(data: QueryParams, blogId: string) {
     const {
       sortBy = 'createdAt',
       sortDirection = 'desc',

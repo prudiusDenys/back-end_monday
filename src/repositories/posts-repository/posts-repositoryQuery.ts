@@ -1,9 +1,9 @@
-import {Post} from '../../utils/interfaces';
+import {Post, QueryParams} from '../../utils/interfaces';
 import {homework3Posts} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 
 export const postsRepositoryQuery = {
-  async getAllPosts(data: any) {
+  async getAllPosts(data: QueryParams) {
     const {
       sortBy = 'createdAt',
       sortDirection = 'desc',
@@ -27,7 +27,6 @@ export const postsRepositoryQuery = {
       items,
       pagesCount: calcPagesCount(totalCount, +pageSize)
     }
-
   },
   async findPost(id: string): Promise<Post | null> {
     return homework3Posts.findOne({id})

@@ -26,6 +26,14 @@ export interface Video {
   "availableResolutions": string[]
 }
 
+export interface QueryParams {
+  searchNameTerm?: string
+  sortDirection: string
+  sortBy: string
+  pageNumber: string
+  pageSize: string
+}
+
 interface ErrorsMessages {
   "message": string
   "field": string

@@ -3,10 +3,11 @@ import {authMiddleware} from '../middlewares/authMiddleware';
 import {normalizeAllBlogsAndPosts, removeMongoId} from '../utils/normalizeData';
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {postsService} from '../services/posts-service';
+import {QueryParams} from '../utils/interfaces';
 
 export const postsRouter = Router({})
 
-postsRouter.get('/', async (req: Request, res: Response) => {
+postsRouter.get('/', async (req: Request<{}, {}, {}, QueryParams>, res: Response) => {
   const data = await postsRepositoryQuery.getAllPosts(req.query)
 
   const normalizedPosts = normalizeAllBlogsAndPosts(data)

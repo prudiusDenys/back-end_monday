@@ -1,6 +1,12 @@
 import {ErrorMessage} from './interfaces';
 import {homework3Blogs} from '../repositories/db';
-import {PostInputValue} from '../repositories/posts-repository/posts-repository';
+
+interface PostsErrorType {
+  title: string,
+  shortDescription: string,
+  content: string,
+  blogId?: string
+}
 
 export const handleBloggersErrors = (name: string, youtubeUrl: string, blogId?: string) => {
   const errorMessage: ErrorMessage = {
@@ -34,15 +40,7 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string, blogId?: 
   return errorMessage
 }
 
-type ProstsErrorType = {
-  title: string,
-  shortDescription: string,
-  content: string,
-  blogId?: string
-}
-
-
-export const handlePostsErrors = ({title, shortDescription, content, blogId}: ProstsErrorType) => {
+export const handlePostsErrors = ({title, shortDescription, content, blogId}: PostsErrorType) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
   }
