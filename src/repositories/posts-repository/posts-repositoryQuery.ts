@@ -17,7 +17,7 @@ export const postsRepositoryQuery = {
       .find({})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
-      .sort({sortBy: sortDirection == 'asc' ? 1 : -1})
+      .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
       .toArray()
 
     return {
