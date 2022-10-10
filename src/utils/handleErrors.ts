@@ -22,8 +22,8 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string, blogId?: 
     })
   }
 
-  if(blogId){
-    if(typeof blogId !== 'string' || blogId.length > 13) {
+  if (blogId) {
+    if (typeof blogId !== 'string' || blogId.length > 13) {
       errorMessage.errorsMessages.push({
         message: "blogId is incorrect",
         field: "blogId"
@@ -34,8 +34,15 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string, blogId?: 
   return errorMessage
 }
 
+type ProstsErrorType = {
+  title: string,
+  shortDescription: string,
+  content: string,
+  blogId?: string
+}
 
-export const handlePostsErrors = ({title, shortDescription, content, blogId}: PostInputValue) => {
+
+export const handlePostsErrors = ({title, shortDescription, content, blogId}: ProstsErrorType) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
   }
@@ -60,11 +67,13 @@ export const handlePostsErrors = ({title, shortDescription, content, blogId}: Po
     })
   }
 
-  if (!blogId || typeof blogId !== 'string' || blogId.length > 13) {
-    errorMessage.errorsMessages.push({
-      message: "blogId is incorrect",
-      field: "blogId"
-    })
+  if (blogId) {
+    if (typeof blogId !== 'string' || blogId.length > 13) {
+      errorMessage.errorsMessages.push({
+        message: "blogId is incorrect",
+        field: "blogId"
+      })
+    }
   }
 
   const foundBlogger = homework3Blogs.findOne({id: blogId})

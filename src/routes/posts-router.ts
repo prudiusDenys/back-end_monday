@@ -26,7 +26,7 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
-  const data: any = await postsService.createPost(req.body)
+  const data: any = await postsService.createPost(req.body, req.body.blogId)
 
   if (data?.value) {
     const normalizedPost = removeMongoId(data.value)

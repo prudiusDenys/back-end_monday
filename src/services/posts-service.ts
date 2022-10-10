@@ -5,7 +5,7 @@ import {handlePostsErrors} from '../utils/handleErrors';
 import {Post} from '../utils/interfaces';
 
 export const postsService = {
-  async createPost(data: PostInputValue) {
+  async createPost(data: PostInputValue, blogId: string) {
     debugger
     const errorMessage = handlePostsErrors(data)
 
@@ -13,7 +13,7 @@ export const postsService = {
       return {error: errorMessage}
     }
 
-    const foundBlogger = await blogsRepositoryQuery.findBlogger(data.blogId)
+    const foundBlogger = await blogsRepositoryQuery.findBlogger(blogId)
     const date = Number(new Date())
 
     if (foundBlogger) {

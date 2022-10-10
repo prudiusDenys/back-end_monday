@@ -51,7 +51,7 @@ bloggersRouter.post('/', authMiddleware, async (req: Request, res: Response) => 
 })
 
 bloggersRouter.post('/:blogId/posts', authMiddleware, async (req: Request, res: Response) => {
-  const data: any = await postsService.createPost({...req.body, blogId: req.params.blogId})
+  const data: any = await postsService.createPost({...req.body}, req.params.blogId)
 
   if (data?.value) {
     const normalizedPost = removeMongoId(data.value)
