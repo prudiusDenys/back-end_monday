@@ -48,7 +48,7 @@ export const handlePostsErrors = ({title, shortDescription, content, blogId}: Po
     })
   }
 
-  if (!blogId || typeof blogId !== 'string' || blogId.length > 14) {
+  if (!blogId || typeof blogId !== 'string') {
     errorMessage.errorsMessages.push({
       message: "blogId is incorrect",
       field: "blogId"

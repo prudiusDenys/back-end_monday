@@ -26,7 +26,7 @@ export const blogsRepositoryQuery = {
       .find(searchNameTerm ? {'name': {$regex: new RegExp(searchNameTerm, 'i')}} : {})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
-      .sort({sortBy: sortDirection == 'asc' ? 1 : -1})
+      .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
       .toArray()
 
     return {
