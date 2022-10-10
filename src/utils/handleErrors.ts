@@ -48,15 +48,16 @@ export const handlePostsErrors = ({title, shortDescription, content, blogId}: Po
     })
   }
 
-  if (!blogId || typeof blogId !== 'string' || blogId.includes('-')) {
-    const isUIDblogId = blogId.includes('-')
-    if (isUIDblogId){
-      const splitedId = blogId.split('-').join('');
-      if(splitedId.length < 14){
-        return
-      }
+  let correctBlogIdLenght = true
+  const isUIDblogId = blogId.includes('-')
+  if (isUIDblogId){
+    const splitedId = blogId.split('-').join('');
+    if(splitedId.length > 14){
+      correctBlogIdLenght = false
     }
+  }
 
+  if (!blogId || typeof blogId !== 'string' || correctBlogIdLenght) {
     errorMessage.errorsMessages.push({
       message: "blogId is incorrect",
       field: "blogId"
