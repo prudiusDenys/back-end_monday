@@ -2,7 +2,7 @@ import {ErrorMessage} from './interfaces';
 import {homework3Blogs} from '../repositories/db';
 import {PostInputValue} from '../repositories/posts-repository/posts-repository';
 
-export const handleBloggersErrors = (name: string, youtubeUrl: string, blogId: string) => {
+export const handleBloggersErrors = (name: string, youtubeUrl: string, blogId?: string) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
   }
@@ -22,15 +22,19 @@ export const handleBloggersErrors = (name: string, youtubeUrl: string, blogId: s
     })
   }
 
-  if (!blogId || typeof blogId !== 'string' || blogId.length > 13) {
-    errorMessage.errorsMessages.push({
-      message: "blogId is incorrect",
-      field: "blogId"
-    })
+  if(blogId){
+    if(typeof blogId !== 'string' || blogId.length > 13) {
+      errorMessage.errorsMessages.push({
+        message: "blogId is incorrect",
+        field: "blogId"
+      })
+    }
   }
 
   return errorMessage
 }
+
+
 export const handlePostsErrors = ({title, shortDescription, content, blogId}: PostInputValue) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
