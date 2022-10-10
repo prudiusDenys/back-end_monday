@@ -22,7 +22,7 @@ export const blogsRepositoryQuery = {
       .toArray()
 
     return {
-      pageSize: pageSize,
+      pageSize,
       pageNumber,
       totalCount: allBlogs.length,
       items,
