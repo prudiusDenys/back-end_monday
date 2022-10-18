@@ -15,6 +15,13 @@ export interface Post {
   createdAt: string
 }
 
+export interface User {
+  id: string
+  login: string
+  email: string
+  createdAt: string
+}
+
 export interface Video {
   "id": number
   "title": string
@@ -26,13 +33,25 @@ export interface Video {
   "availableResolutions": string[]
 }
 
+// Query Params
+
 export interface QueryParams {
-  searchNameTerm?: string
-  sortDirection: string
-  sortBy: string
   pageNumber: string
   pageSize: string
+  sortBy: string
+  sortDirection: string
 }
+
+export interface BlogsQueryParams extends QueryParams {
+  searchNameTerm: string
+}
+
+export interface UsersQueryParams extends QueryParams {
+  searchLoginTerm: string
+  searchEmailTerm: string
+}
+
+// Errors
 
 interface ErrorsMessages {
   "message": string

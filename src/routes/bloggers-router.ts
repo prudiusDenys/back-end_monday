@@ -4,11 +4,11 @@ import {normalizeAllBlogsAndPosts, removeMongoId} from '../utils/normalizeData';
 import {blogsService} from '../services/blogs-service';
 import {blogsRepositoryQuery} from '../repositories/blogs-repository/blogs-repositoryQuery';
 import {postsService} from '../services/posts-service';
-import {QueryParams} from '../utils/interfaces';
+import {BlogsQueryParams} from '../utils/interfaces';
 
 export const bloggersRouter = Router({})
 
-bloggersRouter.get('/', async (req: Request<{}, {}, {}, QueryParams>, res: Response) => {
+bloggersRouter.get('/', async (req: Request<{}, {}, {}, BlogsQueryParams>, res: Response) => {
   const data = await blogsRepositoryQuery.getAllBloggers(req.query)
 
   const normalizedBlogs = normalizeAllBlogsAndPosts(data)
@@ -16,7 +16,7 @@ bloggersRouter.get('/', async (req: Request<{}, {}, {}, QueryParams>, res: Respo
   res.status(200).json(normalizedBlogs)
 })
 
-bloggersRouter.get('/:blogId/posts', async (req: Request<any, {}, {}, QueryParams>, res: Response) => {
+bloggersRouter.get('/:blogId/posts', async (req: Request<any, {}, {}, BlogsQueryParams>, res: Response) => {
   const data = await blogsRepositoryQuery.geAllPostsOfBlog(req.query, req.params.blogId)
 
   if (data.items.length) {
