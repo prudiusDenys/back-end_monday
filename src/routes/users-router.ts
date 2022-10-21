@@ -3,7 +3,8 @@ import {usersRepositoryQuery} from '../repositories/users-repository/users-repos
 import {UsersQueryParams} from '../utils/interfaces';
 import {usersService} from '../services/users-service';
 import {body, validationResult} from 'express-validator';
-
+import {usersRepository} from '../repositories/users-repository/users-repository';
+import {authMiddleware} from '../middlewares/authMiddleware';
 
 export const usersRouter = Router({})
 
@@ -14,9 +15,16 @@ usersRouter.get('/', async (req: Request<{}, {}, {}, UsersQueryParams>, res: Res
 })
 
 usersRouter.post('/',
-  body('email').isEmail().withMessage({message: 'email is incorrect', field: 'email'}),
-  body('login').isString().isLength({min: 3, max: 10}).withMessage({message: 'login is incorrect', field: 'login'}),
-  body('password').isString().isLength({min: 6, max: 20}).withMessage({message: 'password is incorrect', field: 'password'}),
+  authMiddleware,
+  body('email').isEmail().trim().withMessage({message: 'email is incorrect', field: 'email'}),
+  body('login').isString().trim().isLength({min: 3, max: 10}).withMessage({
+    message: 'login is incorrect',
+    field: 'login'
+  }),
+  body('password').isString().trim().isLength({min: 6, max: 20}).withMessage({
+    message: 'password is incorrect',
+    field: 'password'
+  }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -28,5 +36,14 @@ usersRouter.post('/',
     const createdUser = await usersService.createUser(req.body)
 
     return res.status(201).json(createdUser)
-
   })
+
+usersRouter.delete('/:userId', authMiddleware, async (req: Request, res: Response) => {
+  const deletedCount = await usersRepository.deleteUser(req.params.userId)
+
+  if (deletedCount) {
+    return res.sendStatus(204)
+  } else {
+    return res.sendStatus(404)
+  }
+})

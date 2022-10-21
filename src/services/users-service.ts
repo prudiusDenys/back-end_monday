@@ -1,4 +1,5 @@
 import {usersRepository} from '../repositories/users-repository/users-repository';
+import {generateHash} from '../utils/generateHash';
 
 interface UserInputModel {
   login: string
@@ -15,6 +16,7 @@ export interface UserViewModel {
 
 export const usersService = {
   async createUser(userData: UserInputModel): Promise<UserViewModel> {
+    const hash = await generateHash(10, userData.password)
     const date = Number(new Date())
 
     const newUser: UserViewModel = {
@@ -24,7 +26,7 @@ export const usersService = {
       createdAt: new Date().toISOString()
     }
 
-    await usersRepository.createUser(newUser)
+    await usersRepository.createUser({...newUser, password: hash})
 
     return newUser
   }

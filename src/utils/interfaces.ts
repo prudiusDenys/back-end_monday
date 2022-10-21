@@ -20,6 +20,7 @@ export interface User {
   login: string
   email: string
   createdAt: string
+  password: string
 }
 
 export interface Video {

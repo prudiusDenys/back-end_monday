@@ -23,14 +23,13 @@ export const usersRepositoryQuery = {
       : {}
     ).toArray()
 
-    const items = await users.find((searchLoginTerm || searchEmailTerm) ?
+    const items = await users.find(
       {
         $or: [
           {'login': {$regex: new RegExp(queryData.searchLoginTerm, 'i')}},
           {'email': {$regex: new RegExp(queryData.searchEmailTerm, 'i')}}
         ]
       }
-      : {}
     )
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
