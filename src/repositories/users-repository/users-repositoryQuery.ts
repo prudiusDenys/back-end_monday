@@ -72,10 +72,10 @@ export const usersRepositoryQuery = {
     }
 
     return {
-      pagesCount: calcPagesCount(allUsers, +pageSize),
+      pagesCount: calcPagesCount(items.length, +pageSize),
       page: +pageNumber,
       pageSize: +pageSize,
-      totalCount: allUsers,
+      totalCount: items.length,
       items
     }
   }
