@@ -39,6 +39,13 @@ export const usersRepositoryQuery = {
       .toArray() as Item[]
 
     if (searchLoginTerm && searchEmailTerm) {
+      const matchedUsers = await users.find({
+        $or: [
+          {'login': {$regex: new RegExp(searchLoginTerm, 'i')}},
+          {'email': {$regex: new RegExp(searchEmailTerm, 'i')}}
+        ]
+      }).toArray()
+
       items = await users.find({
         $or: [
           {'login': {$regex: new RegExp(searchLoginTerm, 'i')}},
@@ -51,10 +58,12 @@ export const usersRepositoryQuery = {
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
 
-      totalCounts = items.length
+      totalCounts = matchedUsers.length
     }
 
     if (searchLoginTerm && !searchEmailTerm) {
+      const matchedUsers = await users.find({'login': {$regex: new RegExp(searchLoginTerm, 'i')}}).toArray()
+
       items = await users.find({'login': {$regex: new RegExp(searchLoginTerm, 'i')}})
         .project({_id: 0, password: 0})
         .skip(calcSkipPages(+pageNumber, +pageSize))
@@ -62,18 +71,20 @@ export const usersRepositoryQuery = {
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
 
-      totalCounts = items.length
+      totalCounts = matchedUsers.length
     }
 
     if (searchEmailTerm && !searchLoginTerm) {
-      items = await users.find({'email': {$regex: new RegExp(searchEmailTerm, 'i')}})
+      const matchedUsers = await users.find({'email': {$regex: new RegExp(searchEmailTerm, 'i')}}).toArray()
+
+        items = await users.find({'email': {$regex: new RegExp(searchEmailTerm, 'i')}})
         .project({_id: 0, password: 0})
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
 
-      totalCounts = items.length
+      totalCounts = matchedUsers.length
     }
 
     return {
