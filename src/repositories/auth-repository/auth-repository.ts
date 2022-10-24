@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import {users} from '../db';
+import {User} from '../../utils/interfaces';
 
 interface loginInputModel {
   login: string
@@ -7,11 +8,15 @@ interface loginInputModel {
 }
 
 export const authRepository = {
-  async login(loginData: loginInputModel) {
+  async checkCredentials(loginData: loginInputModel): Promise<User | boolean> {
     const user = await users.findOne({login: loginData.login})
 
     if (!user) return false
 
-    return bcrypt.compare(loginData.password, user.password)
+    const matched = await bcrypt.compare(loginData.password, user.password)
+
+    if (matched) return user
+
+    return false
   }
 }
