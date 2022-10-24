@@ -34,7 +34,7 @@ export const usersRepositoryQuery = {
       .project({_id: 0, password: 0})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
-      .sort({[sortBy]: sortDirection === 'desc' ? 1 : -1})
+      .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
       .toArray() as Item[]
 
     if (searchLoginTerm && searchEmailTerm) {
@@ -47,7 +47,7 @@ export const usersRepositoryQuery = {
         .project({_id: 0, password: 0})
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
-        .sort({[sortBy]: sortDirection === 'desc' ? 1 : -1})
+        .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
     }
 
@@ -56,7 +56,7 @@ export const usersRepositoryQuery = {
         .project({_id: 0, password: 0})
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
-        .sort({[sortBy]: sortDirection === 'desc' ? 1 : -1})
+        .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
     }
 
@@ -65,7 +65,7 @@ export const usersRepositoryQuery = {
         .project({_id: 0, password: 0})
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
-        .sort({[sortBy]: sortDirection === 'desc' ? 1 : -1})
+        .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
     }
 
