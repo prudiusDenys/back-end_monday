@@ -1,5 +1,5 @@
 import {videos} from './videos-repository';
-import {homework3Blogs, homework3Posts} from './db';
+import {homework3Blogs, homework3Posts, users} from './db';
 
 
 export const testingRepository = {
@@ -7,5 +7,6 @@ export const testingRepository = {
     videos.splice(0, videos.length)
     await homework3Posts.deleteMany({})
     await homework3Blogs.deleteMany({})
+    await users.deleteMany({})
   }
 }
