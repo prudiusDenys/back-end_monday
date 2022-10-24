@@ -16,6 +16,7 @@ export const blogsRepositoryQuery = {
 
     const items = await homework3Blogs
       .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {})
+      .project({_id: 0})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})

@@ -2,8 +2,23 @@ import {users} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 import {UsersQueryParams} from '../../utils/interfaces';
 
+interface Item {
+  id: string
+  login: string
+  email: string
+  createdAt: string
+}
+
+interface UserViewModel{
+  pagesCount: number
+  page: number
+  pageSize: number
+  totalCount: number
+  items: Item[]
+}
+
 export const usersRepositoryQuery = {
-  async getAllUsers(queryData: UsersQueryParams) {
+  async getAllUsers(queryData: UsersQueryParams): Promise<UserViewModel> {
     const {
       searchLoginTerm = null,
       searchEmailTerm = null,
@@ -13,35 +28,52 @@ export const usersRepositoryQuery = {
       sortDirection = 'desc'
     } = queryData
 
-    const allUsers = await users.find((searchLoginTerm || searchEmailTerm) ?
-      {
-        $or: [
-          {'login': {$regex: new RegExp(queryData.searchLoginTerm, 'i')}},
-          {'email': {$regex: new RegExp(queryData.searchEmailTerm, 'i')}}
-        ]
-      }
-      : {}
-    ).toArray()
+    let items
 
-    const items = await users.find(
-      {
-        $or: [
-          {'login': {$regex: new RegExp(queryData.searchLoginTerm, 'i')}},
-          {'email': {$regex: new RegExp(queryData.searchEmailTerm, 'i')}}
-        ]
-      }
-    )
+    items = await users.find({})
+      .project({_id: 0, password: 0})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection === 'desc' ? 1 : -1})
-      .toArray()
+      .toArray() as Item[]
 
+    if (searchLoginTerm && searchEmailTerm) {
+      items = await users.find({
+        $or: [
+          {'login': {$regex: new RegExp(searchLoginTerm, 'i')}},
+          {'email': {$regex: new RegExp(searchEmailTerm, 'i')}}
+        ]
+      })
+        .project({_id: 0, password: 0})
+        .skip(calcSkipPages(+pageNumber, +pageSize))
+        .limit(+pageSize)
+        .sort({[sortBy]: sortDirection === 'desc' ? 1 : -1})
+        .toArray() as Item[]
+    }
+
+    if (searchLoginTerm && !searchEmailTerm) {
+      items = await users.find({'login': {$regex: new RegExp(searchLoginTerm, 'i')}})
+        .project({_id: 0, password: 0})
+        .skip(calcSkipPages(+pageNumber, +pageSize))
+        .limit(+pageSize)
+        .sort({[sortBy]: sortDirection === 'desc' ? 1 : -1})
+        .toArray() as Item[]
+    }
+
+    if (searchEmailTerm && !searchLoginTerm) {
+      items = await users.find({'email': {$regex: new RegExp(searchEmailTerm, 'i')}})
+        .project({_id: 0, password: 0})
+        .skip(calcSkipPages(+pageNumber, +pageSize))
+        .limit(+pageSize)
+        .sort({[sortBy]: sortDirection === 'desc' ? 1 : -1})
+        .toArray() as Item[]
+    }
 
     return {
-      pagesCount: calcPagesCount(allUsers.length, +pageSize),
+      pagesCount: calcPagesCount(items.length, +pageSize),
       page: +pageNumber,
       pageSize: +pageSize,
-      totalCount: allUsers.length,
+      totalCount: items.length,
       items
     }
   }

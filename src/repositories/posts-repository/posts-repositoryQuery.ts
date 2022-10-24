@@ -14,7 +14,9 @@ export const postsRepositoryQuery = {
     const totalCount = await homework3Posts.countDocuments()
 
     const items = await homework3Posts
-      .find({})
+      .find({}, {
+        projection: {_id: 0}
+      })
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
