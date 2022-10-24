@@ -30,8 +30,6 @@ export const usersRepositoryQuery = {
 
     let items
 
-    const allUsers = await users.countDocuments()
-
     items = await users.find({})
       .project({_id: 0, password: 0})
       .skip(calcSkipPages(+pageNumber, +pageSize))
@@ -72,10 +70,10 @@ export const usersRepositoryQuery = {
     }
 
     return {
-      pagesCount: calcPagesCount(allUsers, +pageSize),
+      pagesCount: calcPagesCount(items.length, +pageSize),
       page: +pageNumber,
       pageSize: +pageSize,
-      totalCount: allUsers,
+      totalCount: items.length,
       items
     }
   }
