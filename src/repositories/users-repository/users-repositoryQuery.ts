@@ -9,7 +9,7 @@ interface Item {
   createdAt: string
 }
 
-interface UserViewModel{
+interface UserViewModel {
   pagesCount: number
   page: number
   pageSize: number
@@ -29,8 +29,7 @@ export const usersRepositoryQuery = {
     } = queryData
 
     let items
-
-    const allUsers = await users.countDocuments()
+    let totalCounts = await users.countDocuments()
 
     items = await users.find({})
       .project({_id: 0, password: 0})
@@ -51,6 +50,8 @@ export const usersRepositoryQuery = {
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
+
+      totalCounts = items.length
     }
 
     if (searchLoginTerm && !searchEmailTerm) {
@@ -60,6 +61,8 @@ export const usersRepositoryQuery = {
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
+
+      totalCounts = items.length
     }
 
     if (searchEmailTerm && !searchLoginTerm) {
@@ -69,13 +72,15 @@ export const usersRepositoryQuery = {
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
         .toArray() as Item[]
+
+      totalCounts = items.length
     }
 
     return {
-      pagesCount: calcPagesCount(items.length, +pageSize),
+      pagesCount: calcPagesCount(totalCounts, +pageSize),
       page: +pageNumber,
       pageSize: +pageSize,
-      totalCount: items.length,
+      totalCount: totalCounts,
       items
     }
   }
