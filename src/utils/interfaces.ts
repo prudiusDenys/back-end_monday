@@ -23,6 +23,14 @@ export interface User {
   password: string
 }
 
+export interface Comment {
+  id: string
+  content: string
+  userId: string
+  userLogin: string
+  createdAt: string
+}
+
 export interface Video {
   "id": number
   "title": string
