@@ -3,7 +3,7 @@ import {blogsRepositoryQuery} from '../repositories/blogs-repository/blogs-repos
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {handlePostsErrors} from '../utils/handleErrors';
 import {Comment, Post, User} from '../utils/interfaces';
-import {comments, homework3Posts} from '../repositories/db';
+import {homework3Posts} from '../repositories/db';
 
 export const postsService = {
   async createPost(data: PostInputValue, blogId: string) {

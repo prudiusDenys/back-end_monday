@@ -18,8 +18,10 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
     const user = await users.findOne({id: userId})
     if (user) {
       req.user = user
+      next()
+    } else {
+      res.sendStatus(401)
     }
-    next()
   } else {
     res.sendStatus(401)
   }
