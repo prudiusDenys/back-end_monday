@@ -6,8 +6,8 @@ import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 
 export const commentsRouter = Router({})
 
-commentsRouter.get('/:commentId', async (req: Request, res: Response) => {
-  const comment = await commentsRepositoryQuery.findComment(req.params.commentId)
+commentsRouter.get('/:id', async (req: Request, res: Response) => {
+  const comment = await commentsRepositoryQuery.findComment(req.params.id)
 
   if (comment) {
     res.status(200).json(comment)
