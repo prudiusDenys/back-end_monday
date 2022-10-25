@@ -1,5 +1,5 @@
 import {Post, QueryParams} from '../../utils/interfaces';
-import {homework3Posts} from '../db';
+import {comments, homework3Posts} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 
 export const postsRepositoryQuery = {
@@ -32,5 +32,35 @@ export const postsRepositoryQuery = {
   },
   async findPost(id: string): Promise<Post | null> {
     return homework3Posts.findOne({id})
+  },
+  async findAllCommentsForSpecificPost(data: QueryParams, postId: string) {
+    const {
+      sortBy = 'createdAt',
+      sortDirection = 'desc',
+      pageNumber = 1,
+      pageSize = 10
+    } = data
+
+    const post = await homework3Posts.findOne({id: postId})
+
+    if (!post) return null
+
+    const allComments = await comments.find({id: postId}).toArray()
+
+    const items = await comments.find({id: postId})
+      .project({_id: 0})
+      .skip(calcSkipPages(+pageNumber, +pageSize))
+      .limit(+pageSize)
+      .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+      .toArray()
+
+    return {
+      pagesCount: calcPagesCount(allComments.length, +pageSize),
+      page: pageNumber,
+      pageSize: pageSize,
+      totalCount: allComments.length,
+      items
+    }
+
   }
 }

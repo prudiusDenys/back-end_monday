@@ -2,7 +2,8 @@ import {PostInputValue, postsRepository} from '../repositories/posts-repository/
 import {blogsRepositoryQuery} from '../repositories/blogs-repository/blogs-repositoryQuery';
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {handlePostsErrors} from '../utils/handleErrors';
-import {Post} from '../utils/interfaces';
+import {Comment, Post, User} from '../utils/interfaces';
+import {comments, homework3Posts} from '../repositories/db';
 
 export const postsService = {
   async createPost(data: PostInputValue, blogId: string) {
@@ -56,5 +57,23 @@ export const postsService = {
       return {status: 'success'}
     }
     return {status: 'notFound'}
+  },
+  async createComment(postId: string, content: string, user: User): Promise<Comment | null> {
+    const post = await homework3Posts.findOne({id: postId})
+
+    if (!post) return null
+
+    const comment: Comment = {
+      id: post.id,
+      content,
+      userId: user.id,
+      userLogin: user.login,
+      createdAt: new Date().toISOString(),
+    }
+
+    await postsRepository.createComment(comment)
+
+    return comment
+
   }
 }

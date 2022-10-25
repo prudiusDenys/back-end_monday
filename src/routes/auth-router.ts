@@ -2,8 +2,6 @@ import {Request, Response, Router} from 'express';
 import {body, validationResult} from 'express-validator';
 import {authRepository} from '../repositories/auth-repository/auth-repository';
 import {jwtService} from '../application/jwt-service';
-import {User} from '../utils/interfaces';
-
 
 export const authRouter = Router({})
 
@@ -20,7 +18,7 @@ authRouter.post('/login',
     const user = await authRepository.checkCredentials(req.body)
 
     if (user) {
-      const token = await jwtService.createJWT(user as User)
+      const token = await jwtService.createJWT(user)
       res.status(200).json(token)
     } else {
       res.sendStatus(401)

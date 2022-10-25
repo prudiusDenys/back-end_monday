@@ -1,9 +1,8 @@
 import {Response, Request, Router} from 'express';
 import {commentsRepositoryQuery} from '../repositories/comments-repository/comments-repositoryQuery';
 import {commentsRepository} from '../repositories/comments-repository/comments-repository';
-import {authMiddleware} from '../middlewares/authMiddleware';
 import {body, validationResult} from 'express-validator';
-
+import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 
 export const commentsRouter = Router({})
 
@@ -17,7 +16,7 @@ commentsRouter.get('/:commentId', async (req: Request, res: Response) => {
   }
 })
 
-commentsRouter.put('/:commentId', authMiddleware,
+commentsRouter.put('/:commentId', authMiddlewareBearer,
   body('content').isString().trim().isLength({min: 20, max: 300})
     .withMessage({message: 'content is incorrect', field: 'content'}),
   async (req: Request, res: Response) => {
@@ -28,20 +27,24 @@ commentsRouter.put('/:commentId', authMiddleware,
       return res.status(400).json({errorsMessages})
     }
 
-    const matchedCount = await commentsRepository.updateComment(req.params.commentId, req.body.content)
+    const result = await commentsRepository.updateComment(req.params.commentId, req.body.content, req.user)
 
-    if (matchedCount) {
+    if (result.status === 204) {
       res.sendStatus(204)
+    } else if (result.status === 403) {
+      res.sendStatus(403)
     } else {
       res.sendStatus(404)
     }
   })
 
-commentsRouter.delete('/:commentId', authMiddleware, async (req: Request, res: Response) => {
-  const deletedCount = await commentsRepository.deleteComment(req.params.commentId)
+commentsRouter.delete('/:commentId', authMiddlewareBearer, async (req: Request, res: Response) => {
+  const result = await commentsRepository.deleteComment(req.params.commentId, req.user)
 
-  if (deletedCount) {
+  if (result.status === 204) {
     res.sendStatus(204)
+  } else if (result.status === 403) {
+    res.sendStatus(403)
   } else {
     res.sendStatus(404)
   }

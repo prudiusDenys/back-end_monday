@@ -1,5 +1,5 @@
-import {Post} from '../../utils/interfaces';
-import {homework3Posts} from '../db';
+import {Comment, Post} from '../../utils/interfaces';
+import {comments, homework3Posts} from '../db';
 
 export interface PostInputValue {
   title: string
@@ -26,5 +26,8 @@ export const postsRepository = {
   async deletePost(id: string) {
     const res = await homework3Posts.deleteOne({id})
     return res.deletedCount
+  },
+  async createComment(comment: Comment) {
+    await comments.insertOne(comment)
   }
 }

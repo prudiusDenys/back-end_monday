@@ -8,15 +8,15 @@ interface loginInputModel {
 }
 
 export const authRepository = {
-  async checkCredentials(loginData: loginInputModel): Promise<User | boolean> {
+  async checkCredentials(loginData: loginInputModel): Promise<User | null> {
     const user = await users.findOne({login: loginData.login})
 
-    if (!user) return false
+    if (!user) return null
 
     const matched = await bcrypt.compare(loginData.password, user.password)
 
     if (matched) return user
 
-    return false
+    return null
   }
 }

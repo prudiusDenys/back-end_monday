@@ -4,6 +4,8 @@ import {normalizeAllBlogsAndPosts, removeMongoId} from '../utils/normalizeData';
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {postsService} from '../services/posts-service';
 import {QueryParams} from '../utils/interfaces';
+import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
+import {body, validationResult} from 'express-validator';
 
 export const postsRouter = Router({})
 
@@ -26,6 +28,17 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 })
 
+postsRouter.get('/:postId/comments', authMiddlewareBearer,
+  async (req: Request<{ postId: string }, {}, {}, any>, res: Response) => {
+    const comments = await postsRepositoryQuery.findAllCommentsForSpecificPost(req.query, req.params.postId)
+
+    if (comments) {
+      res.status(200).json(comments)
+    } else {
+      res.sendStatus(404)
+    }
+  })
+
 postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
   const data: any = await postsService.createPost(req.body, req.body.blogId)
 
@@ -38,6 +51,26 @@ postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
     res.sendStatus(404)
   }
 })
+
+postsRouter.post('/:postId/comments',
+  body('content').isString().trim().isLength({min: 20, max: 300})
+    .withMessage({message: 'content is incorrect', field: 'content'}),
+  authMiddlewareBearer, async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const errorsMessages = errors.array().map(error => error.msg)
+      return res.status(400).json({errorsMessages})
+    }
+
+    const comment = await postsService.createComment(req.params.postId, req.body.content, req.user)
+
+    if (comment) {
+      res.status(201).json(comment)
+    } else {
+      res.sendStatus(404)
+    }
+  })
 
 postsRouter.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   const data: any = await postsService.editPost(req.params.id, req.body)
