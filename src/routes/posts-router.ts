@@ -28,7 +28,7 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 })
 
-postsRouter.get('/:postId/comments', authMiddlewareBearer,
+postsRouter.get('/:postId/comments',
   async (req: Request<{ postId: string }, {}, {}, any>, res: Response) => {
     const comments = await postsRepositoryQuery.findAllCommentsForSpecificPost(req.query, req.params.postId)
 
