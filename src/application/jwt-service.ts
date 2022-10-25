@@ -5,7 +5,9 @@ import {ObjectId} from 'mongodb';
 
 export const jwtService = {
   async createJWT(user: User) {
-    return jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '30d'})
+    const token = jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '30d'})
+    return {accessToken: token}
+
   },
   async getUserIdByToken(token: string) {
     try {
