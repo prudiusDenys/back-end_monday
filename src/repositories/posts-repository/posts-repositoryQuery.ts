@@ -55,18 +55,10 @@ export const postsRepositoryQuery = {
 
     return {
       pagesCount: calcPagesCount(commentsCount, +pageSize),
-      page: pageNumber,
-      pageSize: pageSize,
+      page: +pageNumber,
+      pageSize: +pageSize,
       totalCount: commentsCount,
-      items: items.map(i => (
-        {
-          id: i.id,
-          content: i.content,
-          createdAt: new Date(i.createdAt).toISOString(),
-          userId: i.userId,
-          userLogin: i.userLogin
-        }
-      ))
+      items
     }
 
   }
