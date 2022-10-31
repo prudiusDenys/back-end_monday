@@ -45,20 +45,20 @@ export const postsRepositoryQuery = {
 
     if (!post) return null
 
-    const allComments = await comments.find({id: postId}).toArray()
+    const commentsCount = await comments.countDocuments({id: postId})
 
-    const items = await comments.find({id: postId})
-      .project({_id: 0})
+    const items = await comments.find({id: postId}, {projection: {_id: 0}})
+      // .project({_id: 0})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
       .toArray()
 
     return {
-      pagesCount: calcPagesCount(allComments.length, +pageSize),
+      pagesCount: calcPagesCount(commentsCount, +pageSize),
       page: pageNumber,
       pageSize: pageSize,
-      totalCount: allComments.length,
+      totalCount: commentsCount,
       items
     }
 

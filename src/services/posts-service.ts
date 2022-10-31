@@ -69,9 +69,10 @@ export const postsService = {
       userId: user.id,
       userLogin: user.login,
       createdAt: new Date().toISOString(),
+      // parentId: ''
     }
 
-    await postsRepository.createComment(comment)
+    await postsRepository.createComment({...comment})
 
     return comment
 
