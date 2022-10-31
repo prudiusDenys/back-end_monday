@@ -48,7 +48,6 @@ export const postsRepositoryQuery = {
     const commentsCount = await comments.countDocuments({id: postId})
 
     const items = await comments.find({id: postId}, {projection: {_id: 0}})
-      // .project({_id: 0})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
@@ -59,7 +58,15 @@ export const postsRepositoryQuery = {
       page: pageNumber,
       pageSize: pageSize,
       totalCount: commentsCount,
-      items
+      items: items.map(i => (
+        {
+          id: i.id,
+          content: i.content,
+          createdAt: new Date(i.createdAt),
+          userId: i.userId,
+          userLogin: i.userLogin
+        }
+      ))
     }
 
   }
