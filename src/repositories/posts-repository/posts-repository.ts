@@ -1,5 +1,5 @@
 import {Comment, Post} from '../../utils/interfaces';
-import {comments, homework3Posts} from '../db';
+import {comments, posts} from '../db';
 
 export interface PostInputValue {
   title: string
@@ -10,10 +10,10 @@ export interface PostInputValue {
 
 export const postsRepository = {
   async createPost(newPost: Post) {
-    await homework3Posts.insertOne(newPost)
+    await posts.insertOne(newPost)
   },
   async editPost(id: string, data: PostInputValue) {
-    const res = await homework3Posts.updateOne({id}, {
+    const res = await posts.updateOne({id}, {
       $set: {
         title: data.title,
         shortDescription: data.shortDescription,
@@ -24,7 +24,7 @@ export const postsRepository = {
     return res.matchedCount
   },
   async deletePost(id: string) {
-    const res = await homework3Posts.deleteOne({id})
+    const res = await posts.deleteOne({id})
     return res.deletedCount
   },
   async createComment(comment: Comment) {

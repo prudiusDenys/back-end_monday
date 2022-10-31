@@ -3,7 +3,7 @@ import {blogsRepositoryQuery} from '../repositories/blogs-repository/blogs-repos
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {handlePostsErrors} from '../utils/handleErrors';
 import {Comment, Post, User} from '../utils/interfaces';
-import {homework3Posts} from '../repositories/db';
+import {posts} from '../repositories/db';
 
 export const postsService = {
   async createPost(data: PostInputValue, blogId: string) {
@@ -59,17 +59,19 @@ export const postsService = {
     return {status: 'notFound'}
   },
   async createComment(postId: string, content: string, user: User): Promise<Comment | null> {
-    const post = await homework3Posts.findOne({id: postId})
+    const post = await posts.findOne({id: postId})
 
     if (!post) return null
 
+    const date = Number(new Date())
+
     const comment: Comment = {
-      id: post.id,
+      id: date.toString(),
       content,
       userId: user.id,
       userLogin: user.login,
       createdAt: new Date().toISOString(),
-      // parentId: ''
+      parentId: post.id
     }
 
     await postsRepository.createComment({...comment})

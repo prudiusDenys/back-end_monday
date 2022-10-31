@@ -19,3 +19,8 @@ export const normalizeAllBlogsAndPosts = (data: any) => {
     items: removeMongoId(data.items)
   }
 }
+
+export const removeParentId = (data: any) => {
+  delete data.parentId
+  return data
+}

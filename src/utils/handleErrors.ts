@@ -1,5 +1,5 @@
 import {ErrorMessage} from './interfaces';
-import {homework3Blogs} from '../repositories/db';
+import {blogs} from '../repositories/db';
 
 interface PostsErrorType {
   title: string,
@@ -74,7 +74,7 @@ export const handlePostsErrors = ({title, shortDescription, content, blogId}: Po
     }
   }
 
-  const foundBlogger = homework3Blogs.findOne({id: blogId})
+  const foundBlogger = blogs.findOne({id: blogId})
   if (!foundBlogger) {
     errorMessage.errorsMessages.push({
       message: "bloggerId is incorrect",

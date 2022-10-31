@@ -1,7 +1,6 @@
 import express from 'express'
 import cors from 'cors'
 import {postsRouter} from './routes/posts-router';
-import {videoRouter} from './routes/video-router';
 import {bloggersRouter} from './routes/bloggers-router';
 import {testingRouter} from './routes/testing-router';
 import {runDb} from './repositories/db';
@@ -16,7 +15,6 @@ app.use(cors(), express.json())
 
 // если что-то начинается на /posts, то тогда
 // router перехватывает управление и смотрит какая дальше идет часть и потом дергает конкретный обработчик
-app.use('/videos', videoRouter)
 app.use('/blogs', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/testing', testingRouter)

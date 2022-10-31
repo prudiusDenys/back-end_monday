@@ -6,8 +6,8 @@ const mongoUri = process.env.mongoURI || 'mongodb+srv://Denis:Zimmer483@it-inkub
 const client = new MongoClient(mongoUri);
 const bloggersPostsDb = client.db('bloggers-posts')
 
-export const homework3Blogs = bloggersPostsDb.collection<Blog>('bloggers')
-export const homework3Posts = bloggersPostsDb.collection<Post>('posts')
+export const blogs = bloggersPostsDb.collection<Blog>('bloggers')
+export const posts = bloggersPostsDb.collection<Post>('posts')
 export const users = bloggersPostsDb.collection<User>('users')
 export const comments = bloggersPostsDb.collection<Comment>('comments')
 

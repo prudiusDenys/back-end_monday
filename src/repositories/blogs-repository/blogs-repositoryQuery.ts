@@ -1,5 +1,5 @@
 import {Blog, BlogsQueryParams, QueryParams} from '../../utils/interfaces';
-import {homework3Blogs, homework3Posts} from '../db';
+import {blogs, posts} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 
 export const blogsRepositoryQuery = {
@@ -11,10 +11,10 @@ export const blogsRepositoryQuery = {
       pageSize = 10
     } = data
 
-    const allBlogs = await homework3Blogs
+    const allBlogs = await blogs
       .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {}).toArray()
 
-    const items = await homework3Blogs
+    const items = await blogs
       .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {})
       .project({_id: 0})
       .skip(calcSkipPages(+pageNumber, +pageSize))
@@ -38,9 +38,9 @@ export const blogsRepositoryQuery = {
       pageSize = 10,
     } = data
 
-    const allPostsByBlogger = await homework3Posts.find({blogId}).toArray()
+    const allPostsByBlogger = await posts.find({blogId}).toArray()
 
-    const items = await homework3Posts
+    const items = await posts
       .find({blogId})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
@@ -56,6 +56,6 @@ export const blogsRepositoryQuery = {
     }
   },
   async findBlogger(id: string): Promise<Blog | null> {
-    return await homework3Blogs.findOne({id})
+    return await blogs.findOne({id})
   }
 }

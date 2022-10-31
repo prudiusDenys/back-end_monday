@@ -1,9 +1,9 @@
 import {Request, Response, Router} from 'express';
 import {authMiddleware} from '../middlewares/authMiddleware';
-import {normalizeAllBlogsAndPosts, removeMongoId} from '../utils/normalizeData';
+import {normalizeAllBlogsAndPosts, removeMongoId, removeParentId} from '../utils/normalizeData';
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {postsService} from '../services/posts-service';
-import {QueryParams} from '../utils/interfaces';
+import {Comment, QueryParams} from '../utils/interfaces';
 import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 import {body, validationResult} from 'express-validator';
 
@@ -66,7 +66,8 @@ postsRouter.post('/:postId/comments',
     const comment = await postsService.createComment(req.params.postId, req.body.content, req.user)
 
     if (comment) {
-      res.status(201).json(comment)
+      const normalizedComment = removeParentId(comment)
+      res.status(201).json(normalizedComment)
     } else {
       res.sendStatus(404)
     }

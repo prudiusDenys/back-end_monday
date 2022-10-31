@@ -29,19 +29,8 @@ export interface Comment {
   userId: string
   userLogin: string
   createdAt: string
+  parentId: string
 }
-
-export interface Video {
-  "id": number
-  "title": string
-  "author": string
-  "canBeDownloaded": boolean
-  "minAgeRestriction": null | number
-  "createdAt": string
-  "publicationDate": string
-  "availableResolutions": string[]
-}
-
 // Query Params
 
 export interface QueryParams {
