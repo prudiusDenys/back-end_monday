@@ -62,7 +62,7 @@ export const postsRepositoryQuery = {
         {
           id: i.id,
           content: i.content,
-          createdAt: new Date(i.createdAt),
+          createdAt: new Date(i.createdAt).toISOString(),
           userId: i.userId,
           userLogin: i.userLogin
         }
