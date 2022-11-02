@@ -15,13 +15,13 @@ export interface Post {
   createdAt: string
 }
 
-export interface User {
-  id: string
-  login: string
-  email: string
-  createdAt: string
-  password: string
-}
+// export interface User {
+//   id: string
+//   login: string
+//   email: string
+//   createdAt: string
+//   password: string
+// }
 
 export interface Comment {
   id: string
@@ -31,6 +31,26 @@ export interface Comment {
   createdAt: string
   parentId: string
 }
+
+interface AccountData {
+  login: string
+  email: string
+  password: string
+  createdAt: string
+}
+
+interface EmailConfirmation {
+  confirmationCode: string
+  expirationDate: Date
+  isConfirmed: boolean
+}
+
+export interface User {
+  id: string,
+  accountData: AccountData,
+  emailConfirmation: EmailConfirmation
+}
+
 // Query Params
 
 export interface QueryParams {

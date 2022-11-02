@@ -13,7 +13,7 @@ export const authRepository = {
 
     if (!user) return null
 
-    const matched = await bcrypt.compare(loginData.password, user.password)
+    const matched = await bcrypt.compare(loginData.password, user.accountData.password)
 
     if (matched) return user
 

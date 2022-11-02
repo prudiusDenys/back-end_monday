@@ -69,7 +69,7 @@ export const postsService = {
       id: date.toString(),
       content,
       userId: user.id,
-      userLogin: user.login,
+      userLogin: user.accountData.login,
       createdAt: new Date().toISOString(),
       parentId: post.id
     }
