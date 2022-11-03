@@ -61,12 +61,12 @@ export const authService = {
     if(!user) return false
     if(user.emailConfirmation.isConfirmed) return false
 
-    // const newConfirmationCode = uuid()
-    //
-    // await usersRepository.updateConfirmationCode(user.id, newConfirmationCode)
+    const newConfirmationCode = uuid()
+
+    const updatedUser = await usersRepository.updateConfirmationCode(user.id, newConfirmationCode)
 
     try {
-      await emailsManager.sendEmailConfirmationMessage(user)
+      await emailsManager.sendEmailConfirmationMessage(updatedUser!)
       return true
     } catch (e) {
       console.error(e)
