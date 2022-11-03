@@ -114,15 +114,15 @@ authRouter.post('/registration-confirmation',
 
 authRouter.post('/registration-email-resending',
   body('email').isEmail().trim().withMessage({message: 'email is incorrect', field: 'email'}),
-  // body('email').custom((value) => {
-  //   return usersRepository.findUserByEmail(value).then(user => {
-  //     if (!user) return Promise.reject({message: 'User does not exist', field: 'user'})
-  //     if (user.emailConfirmation.isConfirmed) return Promise.reject({
-  //       message: 'Email is already confirmed',
-  //       field: 'email'
-  //     })
-  //   })
-  // }),
+  body('email').custom((value) => {
+    return usersRepository.findUserByEmail(value).then(user => {
+      if (!user) return Promise.reject({message: 'User does not exist', field: 'email'})
+      if (user.emailConfirmation.isConfirmed) return Promise.reject({
+        message: 'Email is already confirmed',
+        field: 'email'
+      })
+    })
+  }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
