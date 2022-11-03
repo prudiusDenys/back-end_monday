@@ -81,20 +81,20 @@ authRouter.post('/registration',
 
 authRouter.post('/registration-confirmation',
   body('code').isString().trim().withMessage({message: 'code is incorrect', field: 'code'}),
-  // body('code').custom((value, {req}) => {
-  //   return usersRepository.findUserByConfirmationCode(value).then(user => {
-  //     if (!user) return Promise.reject({message: 'User does not exist', field: 'user'})
-  //     if (user.emailConfirmation.isConfirmed) return Promise.reject({message: 'Already confirmed', field: 'code'})
-  //     if (user.emailConfirmation.confirmationCode !== req.body.code) return Promise.reject({
-  //       message: 'Something went wrong',
-  //       field: 'code'
-  //     })
-  //     if (user.emailConfirmation.expirationDate < new Date()) return Promise.reject({
-  //       message: 'Code has been expired',
-  //       field: 'code'
-  //     })
-  //   })
-  // }),
+  body('code').custom((value, {req}) => {
+    return usersRepository.findUserByConfirmationCode(value).then(user => {
+      if (!user) return Promise.reject({message: 'User does not exist', field: 'code'})
+      if (user.emailConfirmation.isConfirmed) return Promise.reject({message: 'Already confirmed', field: 'code'})
+      if (user.emailConfirmation.confirmationCode !== req.body.code) return Promise.reject({
+        message: 'Something went wrong',
+        field: 'code'
+      })
+      if (user.emailConfirmation.expirationDate < new Date()) return Promise.reject({
+        message: 'Code has been expired',
+        field: 'code'
+      })
+    })
+  }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
