@@ -3,7 +3,6 @@ import {body, validationResult} from 'express-validator';
 import {authRepository} from '../repositories/auth-repository/auth-repository';
 import {jwtService} from '../application/jwt-service';
 import {authService} from '../services/auth-service';
-import {emailsManager} from '../managers/emails-manager';
 import {usersRepository} from '../repositories/users-repository/users-repository';
 import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 import {normalizeUserForAuthMe} from '../utils/normalizeData';
@@ -82,20 +81,20 @@ authRouter.post('/registration',
 
 authRouter.post('/registration-confirmation',
   body('code').isString().trim().withMessage({message: 'code is incorrect', field: 'code'}),
-  body('code').custom((value, {req}) => {
-    return usersRepository.findUserByConfirmationCode(value).then(user => {
-      if (!user) return Promise.reject({message: 'User does not exist', field: 'user'})
-      if (user.emailConfirmation.isConfirmed) return Promise.reject({message: 'Already confirmed', field: 'code'})
-      if (user.emailConfirmation.confirmationCode !== req.body.code) return Promise.reject({
-        message: 'Something went wrong',
-        field: 'code'
-      })
-      if (user.emailConfirmation.expirationDate < new Date()) return Promise.reject({
-        message: 'Code has been expired',
-        field: 'code'
-      })
-    })
-  }),
+  // body('code').custom((value, {req}) => {
+  //   return usersRepository.findUserByConfirmationCode(value).then(user => {
+  //     if (!user) return Promise.reject({message: 'User does not exist', field: 'user'})
+  //     if (user.emailConfirmation.isConfirmed) return Promise.reject({message: 'Already confirmed', field: 'code'})
+  //     if (user.emailConfirmation.confirmationCode !== req.body.code) return Promise.reject({
+  //       message: 'Something went wrong',
+  //       field: 'code'
+  //     })
+  //     if (user.emailConfirmation.expirationDate < new Date()) return Promise.reject({
+  //       message: 'Code has been expired',
+  //       field: 'code'
+  //     })
+  //   })
+  // }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -115,15 +114,15 @@ authRouter.post('/registration-confirmation',
 
 authRouter.post('/registration-email-resending',
   body('email').isEmail().trim().withMessage({message: 'email is incorrect', field: 'email'}),
-  body('email').custom((value) => {
-    return usersRepository.findUserByEmail(value).then(user => {
-      if (!user) return Promise.reject({message: 'User does not exist', field: 'user'})
-      if (user.emailConfirmation.isConfirmed) return Promise.reject({
-        message: 'Email is already confirmed',
-        field: 'email'
-      })
-    })
-  }),
+  // body('email').custom((value) => {
+  //   return usersRepository.findUserByEmail(value).then(user => {
+  //     if (!user) return Promise.reject({message: 'User does not exist', field: 'user'})
+  //     if (user.emailConfirmation.isConfirmed) return Promise.reject({
+  //       message: 'Email is already confirmed',
+  //       field: 'email'
+  //     })
+  //   })
+  // }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 

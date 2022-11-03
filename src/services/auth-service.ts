@@ -48,9 +48,7 @@ export const authService = {
   },
   async resendEmail(email: string) {
     const user = await usersRepository.findUserByEmail(email)
-
     const newConfirmationCode = uuid()
-
     const updatedUser = await usersRepository.updateConfirmationCode(user!.id, newConfirmationCode)
 
     try {
