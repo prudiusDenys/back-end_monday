@@ -66,8 +66,6 @@ authRouter.post('/registration',
     }
   })
 
-//e7603a43-02c0-412e-9c8a-92ab53fca5cd
-
 authRouter.post('/registration-confirmation',
   body('code').isString().trim().withMessage({message: 'code is incorrect', field: 'code'}),
   async (req: Request, res: Response) => {
