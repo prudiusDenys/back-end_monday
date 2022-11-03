@@ -1,20 +1,14 @@
 import {users} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
-import {UsersQueryParams} from '../../utils/interfaces';
+import {User, UsersQueryParams} from '../../utils/interfaces';
 
-interface Item {
-  id: string
-  login: string
-  email: string
-  createdAt: string
-}
 
-interface UserViewModel {
+export interface UserViewModel {
   pagesCount: number
   page: number
   pageSize: number
   totalCount: number
-  items: Item[]
+  items: User[]
 }
 
 export const usersRepositoryQuery = {
@@ -36,7 +30,7 @@ export const usersRepositoryQuery = {
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-      .toArray() as Item[]
+      .toArray() as User[]
 
     if (searchLoginTerm && searchEmailTerm) {
       const matchedUsers = await users.find({
@@ -56,7 +50,7 @@ export const usersRepositoryQuery = {
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-        .toArray() as Item[]
+        .toArray() as User[]
 
       totalCounts = matchedUsers.length
     }
@@ -69,7 +63,7 @@ export const usersRepositoryQuery = {
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-        .toArray() as Item[]
+        .toArray() as User[]
 
       totalCounts = matchedUsers.length
     }
@@ -82,7 +76,7 @@ export const usersRepositoryQuery = {
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-        .toArray() as Item[]
+        .toArray() as User[]
 
       totalCounts = matchedUsers.length
     }

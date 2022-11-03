@@ -9,7 +9,7 @@ interface loginInputModel {
 
 export const authRepository = {
   async checkCredentials(loginData: loginInputModel): Promise<User | null> {
-    const user = await users.findOne({login: loginData.login})
+    const user = await users.findOne({'accountData.login': loginData.login})
 
     if (!user) return null
 

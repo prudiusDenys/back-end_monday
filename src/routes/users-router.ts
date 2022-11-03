@@ -5,13 +5,15 @@ import {usersService} from '../services/users-service';
 import {body, validationResult} from 'express-validator';
 import {usersRepository} from '../repositories/users-repository/users-repository';
 import {authMiddleware} from '../middlewares/authMiddleware';
+import {normalizeAllUsers, normalizeUser} from '../utils/normalizeData';
 
 export const usersRouter = Router({})
 
 usersRouter.get('/', async (req: Request<{}, {}, {}, UsersQueryParams>, res: Response) => {
   const allUsers = await usersRepositoryQuery.getAllUsers(req.query)
+  const normalizedAllUsers = normalizeAllUsers(allUsers)
 
-  res.status(200).json(allUsers)
+  res.status(200).json(normalizedAllUsers)
 })
 
 usersRouter.post('/',
@@ -34,8 +36,9 @@ usersRouter.post('/',
     }
 
     const createdUser = await usersService.createUser(req.body)
+    const normalizedUser = normalizeUser(createdUser)
 
-    return res.status(201).json(createdUser)
+    return res.status(201).json(normalizedUser)
   })
 
 usersRouter.delete('/:userId', authMiddleware, async (req: Request, res: Response) => {

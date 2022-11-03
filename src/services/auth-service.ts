@@ -3,10 +3,9 @@ import add from 'date-fns/add';
 import {generateHash} from '../utils/generateHash';
 import {usersRepository} from '../repositories/users-repository/users-repository';
 import {emailsManager} from '../managers/emails-manager';
-import {users} from '../repositories/db';
 import {User} from '../utils/interfaces';
 
-interface RegistrationInputModel {
+export interface RegistrationInputModel {
   email: string
   login: string
   password: string
@@ -14,6 +13,10 @@ interface RegistrationInputModel {
 
 export const authService = {
   async createUser(registrationData: RegistrationInputModel): Promise<boolean> {
+    const isUserExists = await usersRepository.checkExistsUser(registrationData.email, registrationData.login)
+
+    if (isUserExists) return false
+
     const hash = await generateHash(10, registrationData.password)
 
     const newUser: User = {
@@ -43,13 +46,13 @@ export const authService = {
     }
   },
   async confirmEmail(confirmationCode: string): Promise<boolean> {
-    const user = await users.findOne({'emailConfirmation.confirmationCode': confirmationCode})
+    const user = await usersRepository.findUserByConfirmationCode(confirmationCode)
 
     if (!user) return false
+    if (user.emailConfirmation.isConfirmed) return false
+    if (user.emailConfirmation.confirmationCode !== confirmationCode) return false
+    if (user.emailConfirmation.expirationDate < new Date()) return false
 
-    if (user.emailConfirmation.expirationDate > new Date()) {
-      return await usersRepository.updateConfirmation(user.id)
-    }
-    return false
+    return await usersRepository.updateConfirmation(user.id)
   }
 }
