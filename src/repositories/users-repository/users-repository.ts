@@ -28,6 +28,11 @@ export const usersRepository = {
     const res = await users.updateOne({id: userId}, {$set: {'emailConfirmation.isConfirmed': true}})
     return !!res.matchedCount
   },
+  async updateConfirmationCode(id: string, newConfirmationCode: string) {
+    const res = await users.updateOne({id}, {$set: {'emailConfirmation.confirmationCode': newConfirmationCode}})
+    return !!res.matchedCount
+
+  },
   async deleteUser(userId: string) {
     const res = await users.deleteOne({id: userId})
     return res.deletedCount

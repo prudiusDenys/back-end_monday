@@ -40,7 +40,7 @@ export const authService = {
       await emailsManager.sendEmailConfirmationMessage(newUser)
       return true
     } catch (e) {
-      console.log(e)
+      console.error(e)
       await usersRepository.deleteUser(newUser.id)
       return false
     }
@@ -54,5 +54,23 @@ export const authService = {
     if (user.emailConfirmation.expirationDate < new Date()) return false
 
     return await usersRepository.updateConfirmation(user.id)
+  },
+  async resendEmail(email: string) {
+    const user = await usersRepository.findUserByEmail(email)
+
+    if(!user) return false
+    if(user.emailConfirmation.isConfirmed) return false
+
+    const newConfirmationCode = uuid()
+
+    await usersRepository.updateConfirmationCode(user.id, newConfirmationCode)
+
+    try {
+      await emailsManager.sendEmailConfirmationMessage(user)
+      return true
+    } catch (e) {
+      console.error(e)
+      return false
+    }
   }
 }
