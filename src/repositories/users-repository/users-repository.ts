@@ -12,14 +12,8 @@ export const usersRepository = {
   async findUserByConfirmationCode(code: string) {
     return users.findOne({'emailConfirmation.confirmationCode': code})
   },
-  async checkExistsUser(email: string, login: string) {
-    const user = await users.findOne({
-      $or: [
-        {'accountData.email': email},
-        {'accountData.login': login}
-      ]
-    })
-    return !!user
+  async findUserByLogin(login: string) {
+    return users.findOne({'accountData.login': login})
   },
   async createUser(newUser: User) {
     return users.insertOne(newUser)
