@@ -3,7 +3,7 @@ import {authMiddleware} from '../middlewares/authMiddleware';
 import {normalizeAllBlogsAndPosts, removeMongoId, removeParentId} from '../utils/normalizeData';
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {postsService} from '../services/posts-service';
-import {Comment, QueryParams} from '../utils/interfaces';
+import {QueryParams} from '../utils/interfaces';
 import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 import {body, validationResult} from 'express-validator';
 

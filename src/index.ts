@@ -7,11 +7,13 @@ import {runDb} from './repositories/db';
 import {usersRouter} from './routes/users-router';
 import {authRouter} from './routes/auth-router';
 import {commentsRouter} from './routes/comments-router';
+import cookieParser from 'cookie-parser';
 
 const app = express()
 const port = process.env.PORT || 3000
 
 app.use(cors(), express.json())
+app.use(cookieParser())
 
 // если что-то начинается на /posts, то тогда
 // router перехватывает управление и смотрит какая дальше идет часть и потом дергает конкретный обработчик

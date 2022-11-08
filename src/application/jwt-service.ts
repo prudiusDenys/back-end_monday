@@ -1,16 +1,18 @@
 import jwt from 'jsonwebtoken'
-import {User} from '../utils/interfaces';
 import {settings} from '../settings';
 
 export const jwtService = {
-  async createJWT(user: User) {
-    const token = jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '30d'})
+  async createJWTAccessToken(userId: string) {
+    const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: 10})
     return {accessToken: token}
 
   },
-  async getUserIdByToken(token: string) {
+  async createJWTRefreshToken(userId: string) {
+    return  jwt.sign({userId}, settings.JWT_SECRET_REFRESH, {expiresIn: 20})
+  },
+  async verifyUserByToken(token: string, secretKey: string) {
     try {
-      const result: any = await jwt.verify(token, settings.JWT_SECRET)
+      const result: any = await jwt.verify(token, secretKey)
       return result.userId
     } catch (e) {
       return null

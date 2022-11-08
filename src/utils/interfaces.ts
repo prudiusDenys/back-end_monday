@@ -48,7 +48,8 @@ interface EmailConfirmation {
 export interface User {
   id: string,
   accountData: AccountData,
-  emailConfirmation: EmailConfirmation
+  emailConfirmation: EmailConfirmation,
+  expiredTokens: string[]
 }
 
 // Query Params

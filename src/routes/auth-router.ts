@@ -1,17 +1,18 @@
 import {Request, Response, Router} from 'express';
-import {body, validationResult} from 'express-validator';
+import {body, cookie, validationResult} from 'express-validator';
 import {authRepository} from '../repositories/auth-repository/auth-repository';
 import {jwtService} from '../application/jwt-service';
 import {authService} from '../services/auth-service';
 import {usersRepository} from '../repositories/users-repository/users-repository';
 import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 import {normalizeUserForAuthMe} from '../utils/normalizeData';
+import {settings} from '../settings';
 
 export const authRouter = Router({})
 
 authRouter.get('/me', authMiddlewareBearer, async (req: Request, res: Response) => {
   const token = req.headers.authorization!.split(' ')[1]
-  const userId = await jwtService.getUserIdByToken(token)
+  const userId = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
   const currentUser = await usersRepository.findUserById(userId)
   const normalizedCurrentUser = normalizeUserForAuthMe(currentUser!)
 
@@ -31,8 +32,57 @@ authRouter.post('/login',
     const user = await authRepository.checkCredentials(req.body)
 
     if (user) {
-      const token = await jwtService.createJWT(user)
-      res.status(200).json(token)
+      const token = await jwtService.createJWTAccessToken(user.id)
+      const refreshToken = await jwtService.createJWTRefreshToken(user.id)
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+      }).status(200).json(token)
+    } else {
+      res.sendStatus(401)
+    }
+  })
+
+authRouter.post('/refresh-token',
+  cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const errorsMessages = errors.array().map(error => error.msg)
+      return res.status(401).json({errorsMessages})
+    }
+
+    const userId = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
+
+    if (userId) {
+      await authService.setExpiredToken(userId, req.cookies.refreshToken)
+      const token = await jwtService.createJWTAccessToken(userId)
+      const refreshToken = await jwtService.createJWTRefreshToken(userId)
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+      }).status(200).json(token)
+    } else {
+      res.sendStatus(401)
+    }
+  })
+
+authRouter.post('/logout',
+  cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const errorsMessages = errors.array().map(error => error.msg)
+      return res.status(401).json({errorsMessages})
+    }
+
+    const userId = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
+
+    if (userId) {
+      await authService.setExpiredToken(userId, req.cookies.refreshToken)
+      res.sendStatus(204)
     } else {
       res.sendStatus(401)
     }

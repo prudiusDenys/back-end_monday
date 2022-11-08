@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import {jwtService} from '../application/jwt-service';
 import {users} from '../repositories/db';
+import {settings} from '../settings';
 
 export const authMiddlewareBearer = async (req: Request, res: Response, next: NextFunction) => {
   const authValue = req.headers.authorization
@@ -12,7 +13,7 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
 
   const token = authValue.split(' ')[1]
 
-  const userId = await jwtService.getUserIdByToken(token)
+  const userId = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
 
   if (userId) {
     const user = await users.findOne({id: userId})

@@ -33,5 +33,9 @@ export const usersRepository = {
   async deleteUser(userId: string) {
     const res = await users.deleteOne({id: userId})
     return res.deletedCount
+  },
+  async setExpiredToken(userId: string, token: string) {
+    const res = await users.updateOne({id: userId}, {$push: {expiredTokens: token}})
+    return !!res.matchedCount
   }
 }
