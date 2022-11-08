@@ -46,6 +46,19 @@ authRouter.post('/login',
 
 authRouter.post('/refresh-token',
   cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
+  cookie('refreshToken').custom(value => {
+    jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH).then(userId => {
+      if (userId) {
+        usersRepository.findUserById(userId).then(user => {
+          if (user && user.expiredTokens.includes(value)) {
+            return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
+          }
+        })
+      } else {
+        return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
+      }
+    })
+  }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 

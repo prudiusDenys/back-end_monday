@@ -37,5 +37,8 @@ export const usersRepository = {
   async setExpiredToken(userId: string, token: string) {
     const res = await users.updateOne({id: userId}, {$push: {expiredTokens: token}})
     return !!res.matchedCount
+  },
+  async checkExpiredToken() {
+
   }
 }
