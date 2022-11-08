@@ -37,7 +37,7 @@ authRouter.post('/login',
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        // secure: true
+        secure: true
       }).status(200).json(token)
     } else {
       res.sendStatus(401)
@@ -50,9 +50,6 @@ authRouter.post('/refresh-token',
     jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH).then(userId => {
       if (userId) {
         usersRepository.findUserById(userId).then(user => {
-          console.log(value)
-          console.log(user)
-          debugger
           if (user && user.expiredTokens.includes(value)) {
             return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
           }
@@ -77,7 +74,7 @@ authRouter.post('/refresh-token',
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'none',
-      // secure: true
+      secure: true
     }).status(200).json(token)
   })
 
