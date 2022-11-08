@@ -46,6 +46,19 @@ authRouter.post('/login',
 
 authRouter.post('/refresh-token',
   cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
+  cookie('refreshToken').custom((value, {req}) => {
+    jwtService.verifyUserByToken(req.cookies?.refreshToken, settings.JWT_SECRET_REFRESH).then(userId => {
+      if (userId) {
+        usersRepository.findUserById(userId).then(user => {
+          if (user?.expiredTokens.includes(req.cookies?.refreshToken)) {
+            return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
+          }
+        })
+      } else {
+        return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
+      }
+    })
+  }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -55,19 +68,14 @@ authRouter.post('/refresh-token',
     }
 
     const userId = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
-
-    if (userId) {
-      await authService.setExpiredToken(userId, req.cookies.refreshToken)
-      const token = await jwtService.createJWTAccessToken(userId)
-      const refreshToken = await jwtService.createJWTRefreshToken(userId)
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true
-      }).status(200).json(token)
-    } else {
-      res.sendStatus(401)
-    }
+    await authService.setExpiredToken(userId, req.cookies.refreshToken)
+    const token = await jwtService.createJWTAccessToken(userId)
+    const refreshToken = await jwtService.createJWTRefreshToken(userId)
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true
+    }).status(200).json(token)
   })
 
 authRouter.post('/logout',
