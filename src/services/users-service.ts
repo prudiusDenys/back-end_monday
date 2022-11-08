@@ -26,7 +26,8 @@ export const usersService = {
         confirmationCode: uuid(),
         expirationDate: add(new Date(), {days: 3}),
         isConfirmed: false
-      }
+      },
+      expiredTokens: []
     }
 
     await usersRepository.createUser({...newUser})
