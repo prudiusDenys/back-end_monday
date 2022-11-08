@@ -37,7 +37,7 @@ authRouter.post('/login',
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure: true
+        // secure: true
       }).status(200).json(token)
     } else {
       res.sendStatus(401)
@@ -46,11 +46,14 @@ authRouter.post('/login',
 
 authRouter.post('/refresh-token',
   cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
-  cookie('refreshToken').custom((value, {req}) => {
-    jwtService.verifyUserByToken(req.cookies?.refreshToken, settings.JWT_SECRET_REFRESH).then(userId => {
+  cookie('refreshToken').custom(value => {
+    jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH).then(userId => {
       if (userId) {
         usersRepository.findUserById(userId).then(user => {
-          if (user?.expiredTokens.includes(req.cookies?.refreshToken)) {
+          console.log(value)
+          console.log(user)
+          debugger
+          if (user && user.expiredTokens.includes(value)) {
             return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
           }
         })
@@ -74,17 +77,17 @@ authRouter.post('/refresh-token',
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true
+      // secure: true
     }).status(200).json(token)
   })
 
 authRouter.post('/logout',
   cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
-  cookie('refreshToken').custom((value, {req}) => {
-    jwtService.verifyUserByToken(req.cookies?.refreshToken, settings.JWT_SECRET_REFRESH).then(userId => {
+  cookie('refreshToken').custom((value) => {
+    jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH).then(userId => {
       if (userId) {
         usersRepository.findUserById(userId).then(user => {
-          if (user?.expiredTokens.includes(req.cookies?.refreshToken)) {
+          if (user?.expiredTokens.includes(value)) {
             return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
           }
         })
