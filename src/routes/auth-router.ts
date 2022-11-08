@@ -37,6 +37,7 @@ authRouter.post('/login',
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
+        secure: true
       }).status(200).json(token)
     } else {
       res.sendStatus(401)
@@ -62,6 +63,7 @@ authRouter.post('/refresh-token',
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
+        secure: true
       }).status(200).json(token)
     } else {
       res.sendStatus(401)
