@@ -45,7 +45,7 @@ authRouter.post('/login',
   })
 
 authRouter.post('/refresh-token',
-  cookie('refreshToken').trim().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
+  cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
