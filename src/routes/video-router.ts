@@ -56,27 +56,21 @@ videoRouter.post('/',
     .withMessage({message: 'author is incorrect', field: 'author'}),
   body('availableResolutions').isArray()
     .withMessage({message: 'availableResolutions is incorrect', field: 'availableResolutions'}),
-  // body('availableResolutions').custom(value => {
-  //   if (!Array.isArray(value)) {
-  //     return Promise.reject({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
-  //   } else {
-  //     const availableResolutions = Object.keys(Resolutions)
-  //     value.forEach(item => {
-  //       if (!availableResolutions.includes(item)) {
-  //         return Promise.reject({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
-  //       }
-  //     })
-  //   }
-  // }),
   (req: Request, res: Response) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      console.log(errors.array())
-      console.log(errors.array())
       const errorsMessages = errors.array().map(error => error.msg)
       return res.status(400).json({errorsMessages})
     }
+
+    const resolutions = Object.keys(Resolutions)
+
+    req.body.availableResolutions.forEach((item: any) => {
+      if(!resolutions.includes(item)){
+        return res.status(400).json({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
+      }
+    })
 
     const createdVideo = videoService.createVideo(req.body)
     res.status(201).json(createdVideo)
