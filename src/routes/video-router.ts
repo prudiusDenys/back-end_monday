@@ -54,8 +54,18 @@ videoRouter.post('/',
     .withMessage({message: 'author is incorrect', field: 'author'})
     .isLength({max: 20})
     .withMessage({message: 'author is incorrect', field: 'author'}),
-  body('availableResolutions').isArray()
-    .withMessage({message: 'availableResolutions is incorrect', field: 'availableResolutions'}),
+  body('availableResolutions').custom(value => {
+    if (!Array.isArray(value)) {
+      return Promise.reject({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
+    } else {
+      const availableResolutions = Object.keys(Resolutions)
+      value.forEach(item => {
+        if (!availableResolutions.includes(item)) {
+          return Promise.reject({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
+        }
+      })
+    }
+  }),
   (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -71,9 +81,13 @@ videoRouter.post('/',
   })
 
 videoRouter.put('/:id',
-  body('title').isString().trim().isLength({max: 40})
+  body('title').isString().trim()
+    .withMessage({message: 'title is incorrect', field: 'title'})
+    .isLength({max: 40})
     .withMessage({message: 'title is incorrect', field: 'title'}),
-  body('author').isString().trim().isLength({max: 20})
+  body('author').isString().trim()
+    .withMessage({message: 'author is incorrect', field: 'author'})
+    .isLength({max: 20})
     .withMessage({message: 'author is incorrect', field: 'author'}),
   body('availableResolutions').isArray()
     .withMessage({message: 'availableResolutions is incorrect', field: 'availableResolutions'}),
