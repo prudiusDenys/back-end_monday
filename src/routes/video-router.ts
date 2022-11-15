@@ -49,7 +49,7 @@ videoRouter.post('/',
   body('title').isString().trim()
     .withMessage({message: 'title is incorrect', field: 'title'})
     .isLength({max: 40})
-    .withMessage({message: 'author is incorrect', field: 'author'}),
+    .withMessage({message: 'title is incorrect', field: 'author'}),
   body('author').isString().trim()
     .withMessage({message: 'author is incorrect', field: 'author'})
     .isLength({max: 20})
