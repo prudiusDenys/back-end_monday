@@ -21,15 +21,17 @@ interface UpdateUserModel {
 export const videoService = {
   createVideo(createUserData: CreateUserModel): Video {
 
+    const date = new Date()
+
     const newVideo: Video = {
-      id: Number(new Date),
+      id: Number(date),
       title: createUserData.title,
       author: createUserData.author,
       availableResolutions: createUserData.availableResolutions,
-      createdAt: new Date().toISOString(),
+      createdAt: date.toISOString(),
       canBeDownloaded: true,
       minAgeRestriction: null,
-      publicationDate: new Date().toISOString()
+      publicationDate: new Date(date.getTime() + 86400000).toISOString()
     }
 
     videoRepository.createUser(newVideo)
