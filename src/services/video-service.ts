@@ -22,7 +22,7 @@ export const videoService = {
   createVideo(createUserData: CreateUserModel): Video {
 
     const newVideo: Video = {
-      id: +uuid(),
+      id: Number(new Date),
       title: createUserData.title,
       author: createUserData.author,
       availableResolutions: createUserData.availableResolutions,
