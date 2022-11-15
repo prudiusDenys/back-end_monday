@@ -29,7 +29,7 @@ export const videoService = {
       author: createUserData.author,
       availableResolutions: createUserData.availableResolutions,
       createdAt: date.toISOString(),
-      canBeDownloaded: true,
+      canBeDownloaded: false,
       minAgeRestriction: null,
       publicationDate: new Date(date.getTime() + 86400000).toISOString()
     }

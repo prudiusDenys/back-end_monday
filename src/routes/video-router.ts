@@ -46,9 +46,13 @@ videoRouter.get('/:id', (req: Request, res: Response) => {
 })
 
 videoRouter.post('/',
-  body('title').isString().trim().isLength({max: 40})
-    .withMessage({message: 'title is incorrect', field: 'title'}),
-  body('author').isString().trim().isLength({max: 20})
+  body('title').isString().trim()
+    .withMessage({message: 'title is incorrect', field: 'title'})
+    .isLength({max: 40})
+    .withMessage({message: 'author is incorrect', field: 'author'}),
+  body('author').isString().trim()
+    .withMessage({message: 'author is incorrect', field: 'author'})
+    .isLength({max: 20})
     .withMessage({message: 'author is incorrect', field: 'author'}),
   body('availableResolutions').isArray()
     .withMessage({message: 'availableResolutions is incorrect', field: 'availableResolutions'}),
@@ -56,6 +60,8 @@ videoRouter.post('/',
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+      console.log(errors.array())
+      console.log(errors.array())
       const errorsMessages = errors.array().map(error => error.msg)
       return res.status(400).json({errorsMessages})
     }
