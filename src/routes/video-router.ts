@@ -54,18 +54,20 @@ videoRouter.post('/',
     .withMessage({message: 'author is incorrect', field: 'author'})
     .isLength({max: 20})
     .withMessage({message: 'author is incorrect', field: 'author'}),
-  body('availableResolutions').custom(value => {
-    if (!Array.isArray(value)) {
-      return Promise.reject({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
-    } else {
-      const availableResolutions = Object.keys(Resolutions)
-      value.forEach(item => {
-        if (!availableResolutions.includes(item)) {
-          return Promise.reject({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
-        }
-      })
-    }
-  }),
+  body('availableResolutions').isArray()
+    .withMessage({message: 'availableResolutions is incorrect', field: 'availableResolutions'}),
+  // body('availableResolutions').custom(value => {
+  //   if (!Array.isArray(value)) {
+  //     return Promise.reject({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
+  //   } else {
+  //     const availableResolutions = Object.keys(Resolutions)
+  //     value.forEach(item => {
+  //       if (!availableResolutions.includes(item)) {
+  //         return Promise.reject({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
+  //       }
+  //     })
+  //   }
+  // }),
   (req: Request, res: Response) => {
     const errors = validationResult(req);
 
