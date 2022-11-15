@@ -8,6 +8,7 @@ import {usersRouter} from './routes/users-router';
 import {authRouter} from './routes/auth-router';
 import {commentsRouter} from './routes/comments-router';
 import cookieParser from 'cookie-parser';
+import {videoRouter} from './routes/video-router';
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -17,6 +18,7 @@ app.use(cookieParser())
 
 // если что-то начинается на /posts, то тогда
 // router перехватывает управление и смотрит какая дальше идет часть и потом дергает конкретный обработчик
+app.use('/videos', videoRouter)
 app.use('/blogs', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/testing', testingRouter)
