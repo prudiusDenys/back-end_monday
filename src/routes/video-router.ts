@@ -68,7 +68,10 @@ videoRouter.post('/',
 
     req.body.availableResolutions.forEach((item: any) => {
       if(!resolutions.includes(item)){
-        return res.status(400).json({message: 'availableResolutions is incorrect', field: 'availableResolutions'})
+        return res.status(400).json({errorsMessages : [{
+            message: 'availableResolutions is incorrect',
+            field: 'availableResolutions'
+          }]})
       }
     })
 
