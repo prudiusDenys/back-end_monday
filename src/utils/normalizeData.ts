@@ -1,4 +1,4 @@
-import {User} from './interfaces';
+import {AuthDeviceSession, User} from './interfaces';
 import {UserViewModel} from '../repositories/users-repository/users-repositoryQuery';
 
 export const removeMongoId = (data: any) => {
@@ -55,4 +55,16 @@ export const normalizeAllUsers = (users: UserViewModel) => {
     }
   })
   return {...users, items}
+}
+
+export const normalizeSecurityDevices = (authDevicesSessions: AuthDeviceSession[]) => {
+  return authDevicesSessions.map((session: AuthDeviceSession) => {
+    return {
+      ip: session.ip,
+      title: session.title,
+      lastActivatedDate: session.lastActivatedDate,
+      expiredDate: session.expiredDate,
+      deviceId: session.deviceId
+    }
+  })
 }

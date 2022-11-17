@@ -28,7 +28,7 @@ export const authService = {
         expirationDate: add(new Date(), {days: 3}),
         isConfirmed: false
       },
-      expiredTokens: []
+      authDevicesSessions: []
     }
 
     await usersRepository.createUser(newUser)

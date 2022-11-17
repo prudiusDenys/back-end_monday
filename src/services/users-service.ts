@@ -3,6 +3,8 @@ import {generateHash} from '../utils/generateHash';
 import {User} from '../utils/interfaces';
 import {uuid} from 'uuidv4';
 import add from 'date-fns/add';
+import {jwtService} from '../application/jwt-service';
+import {settings} from '../settings';
 
 interface UserInputModel {
   login: string
@@ -27,11 +29,22 @@ export const usersService = {
         expirationDate: add(new Date(), {days: 3}),
         isConfirmed: false
       },
-      expiredTokens: []
+      authDevicesSessions: []
     }
 
     await usersRepository.createUser({...newUser})
 
     return newUser
+  },
+  async addDeviceSession(userId: string, ip: string, title: string, refreshToken: string, deviceId: string) {
+    const {issueAt, expiredDate}: any = await jwtService.verifyUserByToken(refreshToken, settings.JWT_SECRET_REFRESH)
+
+    await usersRepository.setNewSession(userId, ip, title, issueAt, expiredDate, deviceId)
+  },
+  async removeAllSessions(userId: string) {
+    await usersRepository.removeAllSessions(userId)
+  },
+  async removeSession(userId: string, deviceId: string) {
+    return usersRepository.removeSession(userId, deviceId)
   }
 }

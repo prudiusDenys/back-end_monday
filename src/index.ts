@@ -9,10 +9,12 @@ import {authRouter} from './routes/auth-router';
 import {commentsRouter} from './routes/comments-router';
 import cookieParser from 'cookie-parser';
 import {videoRouter} from './routes/video-router';
+import {securityDevicesRouter} from './routes/securityDevices-router';
 
 const app = express()
 const port = process.env.PORT || 3000
 
+app.set('trust proxy', true)
 app.use(cors(), express.json())
 app.use(cookieParser())
 
@@ -25,6 +27,7 @@ app.use('/testing', testingRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/comments', commentsRouter)
+app.use('/security', securityDevicesRouter)
 
 const startApp = async () => {
   await runDb()

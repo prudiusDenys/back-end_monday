@@ -45,11 +45,20 @@ interface EmailConfirmation {
   isConfirmed: boolean
 }
 
+export interface AuthDeviceSession {
+  ip: string
+  title: string
+  lastActivatedDate: string
+  expiredDate: string
+  deviceId: string
+  userId: string
+}
+
 export interface User {
   id: string,
   accountData: AccountData,
   emailConfirmation: EmailConfirmation,
-  expiredTokens: string[]
+  authDevicesSessions: AuthDeviceSession[]
 }
 
 // Query Params

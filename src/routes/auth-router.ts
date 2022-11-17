@@ -7,12 +7,14 @@ import {usersRepository} from '../repositories/users-repository/users-repository
 import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 import {normalizeUserForAuthMe} from '../utils/normalizeData';
 import {settings} from '../settings';
+import {usersService} from '../services/users-service';
+import {uuid} from 'uuidv4';
 
 export const authRouter = Router({})
 
 authRouter.get('/me', authMiddlewareBearer, async (req: Request, res: Response) => {
   const token = req.headers.authorization!.split(' ')[1]
-  const userId = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
+  const {userId}: any = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
   const currentUser = await usersRepository.findUserById(userId)
   const normalizedCurrentUser = normalizeUserForAuthMe(currentUser!)
 
@@ -32,12 +34,19 @@ authRouter.post('/login',
     const user = await authRepository.checkCredentials(req.body)
 
     if (user) {
+      const ip = req.ip
+      const title = req.headers['user-agent']
+      const deviceId = uuid()
+
       const token = await jwtService.createJWTAccessToken(user.id)
-      const refreshToken = await jwtService.createJWTRefreshToken(user.id)
+      const refreshToken = await jwtService.createJWTRefreshToken(user.id, deviceId)
+
+      await usersService.addDeviceSession(user.id, ip, title!, refreshToken, deviceId)
+
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure: true
+        // secure: true
       }).status(200).json(token)
     } else {
       res.sendStatus(401)
@@ -48,11 +57,13 @@ authRouter.post('/refresh-token',
   cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
   cookie('refreshToken').custom(value => {
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
-      .then(userId => {
-        if (userId) {
-          return usersRepository.findUserById(userId)
+      .then((tokenData) => {
+        if (tokenData) {
+          return usersRepository.findUserById(tokenData.userId)
             .then(user => {
-              if (user && user.expiredTokens.includes(value)) {
+              const activeSession = user!.authDevicesSessions.find(session => session.deviceId === tokenData.deviceId)
+              if (!activeSession) return true
+              if (activeSession.lastActivatedDate !== tokenData.issueAt) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })
@@ -69,16 +80,17 @@ authRouter.post('/refresh-token',
       return res.status(401).json({errorsMessages})
     }
 
-    const userId = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
+    const {userId}: any = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
 
     if (userId) {
+      const deviceId = uuid()
       await authService.setExpiredToken(userId, req.cookies.refreshToken)
       const token = await jwtService.createJWTAccessToken(userId)
-      const refreshToken = await jwtService.createJWTRefreshToken(userId)
+      const refreshToken = await jwtService.createJWTRefreshToken(userId, deviceId)
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure: true
+        // secure: true
       }).status(200).json(token)
     } else {
       res.sendStatus(401)
@@ -89,11 +101,13 @@ authRouter.post('/logout',
   cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
   cookie('refreshToken').custom(value => {
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
-      .then(userId => {
-        if (userId) {
-          return usersRepository.findUserById(userId)
+      .then((tokenData) => {
+        if (tokenData) {
+          return usersRepository.findUserById(tokenData.userId)
             .then(user => {
-              if (user && user.expiredTokens.includes(value)) {
+              const activeSession = user!.authDevicesSessions.find(session => session.deviceId === tokenData.deviceId)
+              if (!activeSession) return true
+              if (activeSession.lastActivatedDate !== tokenData.issueAt) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })
@@ -110,7 +124,7 @@ authRouter.post('/logout',
       return res.status(401).json({errorsMessages})
     }
 
-    const userId = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
+    const {userId}: any = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
 
     if (userId) {
       await authService.setExpiredToken(userId, req.cookies.refreshToken)
