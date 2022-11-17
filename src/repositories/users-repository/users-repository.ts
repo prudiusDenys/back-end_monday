@@ -1,7 +1,5 @@
 import {users} from '../db';
 import {User} from '../../utils/interfaces';
-import {uuid} from 'uuidv4';
-
 
 export const usersRepository = {
   async findUserByEmail(email: string) {
@@ -37,28 +35,6 @@ export const usersRepository = {
   },
   async setExpiredToken(userId: string, token: string) {
     const res = await users.updateOne({id: userId}, {$push: {expiredTokens: token}})
-    return !!res.matchedCount
-  },
-  async setNewSession(userId: string, ip: string, title: string, issueAt: string, expiredDate: string, deviceId: string) {
-    await users.updateOne({id: userId},
-      {
-        $push: {
-          authDevicesSessions: {
-            ip,
-            title,
-            deviceId,
-            lastActivatedDate: issueAt,
-            expiredDate: expiredDate,
-            userId
-          }
-        }
-      })
-  },
-  async removeAllSessions(userId: string) {
-    await users.updateOne({id: userId}, {$set: {authDevicesSessions: []}})
-  },
-  async removeSession(userId: string, deviceId: string) {
-    const res = await users.updateOne({id: userId}, {$pull: {authDevicesSessions: {deviceId}}})
     return !!res.matchedCount
   }
 }

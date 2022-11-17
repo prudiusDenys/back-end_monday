@@ -15,14 +15,6 @@ export interface Post {
   createdAt: string
 }
 
-// export interface User {
-//   id: string
-//   login: string
-//   email: string
-//   createdAt: string
-//   password: string
-// }
-
 export interface Comment {
   id: string
   content: string
@@ -57,8 +49,7 @@ export interface AuthDeviceSession {
 export interface User {
   id: string,
   accountData: AccountData,
-  emailConfirmation: EmailConfirmation,
-  authDevicesSessions: AuthDeviceSession[]
+  emailConfirmation: EmailConfirmation
 }
 
 // Query Params

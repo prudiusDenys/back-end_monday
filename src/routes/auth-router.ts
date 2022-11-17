@@ -7,8 +7,9 @@ import {usersRepository} from '../repositories/users-repository/users-repository
 import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 import {normalizeUserForAuthMe} from '../utils/normalizeData';
 import {settings} from '../settings';
-import {usersService} from '../services/users-service';
 import {uuid} from 'uuidv4';
+import {sessionsService} from '../services/sessions-service';
+import {sessionsRepositoryQuery} from '../repositories/sessions-repository/sessions-repositoryQuery';
 
 export const authRouter = Router({})
 
@@ -41,7 +42,7 @@ authRouter.post('/login',
       const token = await jwtService.createJWTAccessToken(user.id)
       const refreshToken = await jwtService.createJWTRefreshToken(user.id, deviceId)
 
-      await usersService.addDeviceSession(user.id, ip, title!, refreshToken, deviceId)
+      await sessionsService.addNewSession(user.id, ip, title!, refreshToken, deviceId)
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
@@ -59,11 +60,10 @@ authRouter.post('/refresh-token',
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
       .then((tokenData) => {
         if (tokenData) {
-          return usersRepository.findUserById(tokenData.userId)
-            .then(user => {
-              const activeSession = user!.authDevicesSessions.find(session => session.deviceId === tokenData.deviceId)
-              if (!activeSession) return true
-              if (activeSession.lastActivatedDate !== tokenData.issueAt) {
+          return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
+            .then(session => {
+              if (!session) return true
+              if (session.lastActivatedDate !== tokenData.issueAt) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })
@@ -103,11 +103,10 @@ authRouter.post('/logout',
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
       .then((tokenData) => {
         if (tokenData) {
-          return usersRepository.findUserById(tokenData.userId)
-            .then(user => {
-              const activeSession = user!.authDevicesSessions.find(session => session.deviceId === tokenData.deviceId)
-              if (!activeSession) return true
-              if (activeSession.lastActivatedDate !== tokenData.issueAt) {
+          return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
+            .then(session => {
+              if (!session) return true
+              if (session.lastActivatedDate !== tokenData.issueAt) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })

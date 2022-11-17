@@ -27,8 +27,7 @@ export const authService = {
         confirmationCode: uuid(),
         expirationDate: add(new Date(), {days: 3}),
         isConfirmed: false
-      },
-      authDevicesSessions: []
+      }
     }
 
     await usersRepository.createUser(newUser)
