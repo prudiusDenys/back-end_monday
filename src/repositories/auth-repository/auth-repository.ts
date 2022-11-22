@@ -3,13 +3,13 @@ import {users} from '../db';
 import {User} from '../../utils/interfaces';
 
 interface loginInputModel {
-  login: string
+  loginOrEmail: string
   password: string
 }
 
 export const authRepository = {
   async checkCredentials(loginData: loginInputModel): Promise<User | null> {
-    const user = await users.findOne({'accountData.login': loginData.login})
+    const user = await users.findOne({'accountData.login': loginData.loginOrEmail})
 
     if (!user) return null
 

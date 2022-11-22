@@ -1,8 +1,9 @@
 export interface Blog {
   id: string
   name: string
-  youtubeUrl: string
+  websiteUrl: string
   createdAt: string
+  description: string
 }
 
 export interface Post {

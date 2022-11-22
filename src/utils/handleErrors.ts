@@ -8,23 +8,23 @@ interface PostsErrorType {
   blogId?: string
 }
 
-export const handleBloggersErrors = (name: string, youtubeUrl: string, blogId?: string) => {
+export const handleBloggersErrors = (name: string, websiteUrl: string, blogId?: string) => {
   const errorMessage: ErrorMessage = {
     errorsMessages: []
   }
 
   const regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
 
-  if (!name || !name.trim() || typeof youtubeUrl !== 'string' || name.length > 15) {
+  if (!name || !name.trim() || typeof websiteUrl !== 'string' || name.length > 15) {
     errorMessage.errorsMessages.push({
       message: "name is incorrect",
       field: "name"
     })
   }
-  if (!youtubeUrl || youtubeUrl.length > 100 || !regexp.exec(youtubeUrl)) {
+  if (!websiteUrl || websiteUrl.length > 100 || !regexp.exec(websiteUrl)) {
     errorMessage.errorsMessages.push({
-      "message": "youtubeUrl is incorrect",
-      "field": "youtubeUrl"
+      "message": "websiteUrl is incorrect",
+      "field": "websiteUrl"
     })
   }
 

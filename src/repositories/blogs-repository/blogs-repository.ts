@@ -5,9 +5,9 @@ export const blogsRepository = {
   async createBlogger(newUser: Blog) {
     await blogs.insertOne(newUser)
   },
-  async editBlogger(id: string, name: string, youtubeUrl: string) {
+  async editBlogger(id: string, name: string, websiteUrl: string) {
     const res = await blogs.updateOne({id}, {
-      $set: {name, youtubeUrl}
+      $set: {name, websiteUrl}
     })
     return res.matchedCount
   },

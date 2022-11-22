@@ -23,7 +23,7 @@ authRouter.get('/me', authMiddlewareBearer, async (req: Request, res: Response) 
 })
 
 authRouter.post('/login',
-  body('login').isString().trim().withMessage({message: 'login is incorrect', field: 'login'}),
+  body('loginOrEmail').isString().trim().withMessage({message: 'loginOrEmail is incorrect', field: 'loginOrEmail'}),
   body('password').isString().trim().withMessage({message: 'password is incorrect', field: 'password'}),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
