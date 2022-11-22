@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {body, cookie, validationResult} from 'express-validator';
+import {body, cookie, header, validationResult} from 'express-validator';
 import {authRepository} from '../repositories/auth-repository/auth-repository';
 import {jwtService} from '../application/jwt-service';
 import {authService} from '../services/auth-service';
@@ -32,6 +32,7 @@ authRouter.post('/login',
       const errorsMessages = errors.array().map(error => error.msg)
       return res.status(400).json({errorsMessages})
     }
+
     const user = await authRepository.checkCredentials(req.body)
 
     if (user) {
@@ -48,6 +49,8 @@ authRouter.post('/login',
         httpOnly: true,
         sameSite: 'none',
         // secure: true
+      }).header({
+        'Retry-After': 5
       }).status(200).json(token)
     } else {
       res.sendStatus(401)

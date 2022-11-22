@@ -67,9 +67,9 @@ securityDevicesRouter.delete('/devices',
       return res.status(401).json({errorsMessages})
     }
 
-    const {userId}: any = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
+    const {userId, deviceId}: any = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
 
-    await sessionsService.removeAllSessions(userId)
+    await sessionsService.removeAllSessions(userId, deviceId)
 
     res.sendStatus(204)
   })

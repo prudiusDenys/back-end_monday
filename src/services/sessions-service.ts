@@ -19,8 +19,8 @@ export const sessionsService = {
 
     await sessionsRepository.setNewSession(newSession)
   },
-  async removeAllSessions(userId: string) {
-    await sessionsRepository.removeAllSessions(userId)
+  async removeAllSessions(userId: string, deviceId: string) {
+    await sessionsRepository.removeAllSessions(userId, deviceId)
   },
   async removeSession(deviceId: string) {
     return sessionsRepository.removeSession(deviceId)
