@@ -1,4 +1,4 @@
-import {comments, blogs, posts, users} from './db';
+import {comments, blogs, posts, users, authDevicesSessions} from './db';
 import {videos} from '../routes/video-router';
 
 
@@ -9,5 +9,6 @@ export const testingRepository = {
     await blogs.deleteMany({})
     await users.deleteMany({})
     await comments.deleteMany({})
+    await authDevicesSessions.deleteMany({})
   }
 }
