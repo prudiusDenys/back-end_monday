@@ -13,7 +13,7 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
 
   const token = authValue.split(' ')[1]
 
-  const userId = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
+  const {userId}: any = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
 
   if (userId) {
     const user = await users.findOne({id: userId})
@@ -24,6 +24,7 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
       res.sendStatus(401)
     }
   } else {
+    debugger
     res.sendStatus(401)
   }
 }

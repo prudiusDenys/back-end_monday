@@ -2,7 +2,6 @@ import {jwtService} from '../application/jwt-service';
 import {settings} from '../settings';
 import {sessionsRepository} from '../repositories/sessions-repository/sessions-repository';
 import {AuthDeviceSession} from '../utils/interfaces';
-import {usersRepository} from '../repositories/users-repository/users-repository';
 
 
 export const sessionsService = {
