@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {body, cookie, validationResult} from 'express-validator';
+import {body, cookie, header, validationResult} from 'express-validator';
 import {authRepository} from '../repositories/auth-repository/auth-repository';
 import {jwtService} from '../application/jwt-service';
 import {authService} from '../services/auth-service';
@@ -14,13 +14,13 @@ import {sessionsRepositoryQuery} from '../repositories/sessions-repository/sessi
 export const authRouter = Router({})
 
 authRouter.get('/me', authMiddlewareBearer, async (req: Request, res: Response) => {
-  const token = req.headers.authorization!.split(' ')[1]
-  const {userId}: any = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
-  const currentUser = await usersRepository.findUserById(userId)
-  const normalizedCurrentUser = normalizeUserForAuthMe(currentUser!)
+    const token = req.headers.authorization!.split(' ')[1]
+    const {userId}: any = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
+    const currentUser = await usersRepository.findUserById(userId)
+    const normalizedCurrentUser = normalizeUserForAuthMe(currentUser!)
 
-  res.status(200).json(normalizedCurrentUser)
-})
+    res.status(200).json(normalizedCurrentUser)
+  })
 
 authRouter.post('/login',
   body('loginOrEmail').isString().trim().withMessage({message: 'loginOrEmail is incorrect', field: 'loginOrEmail'}),

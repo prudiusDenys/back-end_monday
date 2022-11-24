@@ -18,6 +18,7 @@ export const jwtService = {
     return  jwt.sign({userId, deviceId}, settings.JWT_SECRET_REFRESH, {expiresIn: 20})
   },
   async verifyUserByToken(token: string, secretKey: string) {
+    debugger
     try {
       const result: any = await jwt.verify(token, secretKey)
       return {
@@ -27,6 +28,7 @@ export const jwtService = {
         expiredDate: new Date(result.exp * 1000).toISOString()
       } as VerifiedUserByTokenResponse
     } catch (e) {
+      debugger
       return null
     }
   }
