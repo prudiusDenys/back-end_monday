@@ -48,7 +48,7 @@ authRouter.post('/login',
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure: false
+        secure: true
       }).header({
         'Retry-After': 5
       }).status(200).json(token)
@@ -95,7 +95,7 @@ authRouter.post('/refresh-token',
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure: false
+        secure: true
       }).status(200).json(token)
     } else {
       res.sendStatus(401)
