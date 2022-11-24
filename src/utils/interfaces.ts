@@ -45,12 +45,13 @@ export interface AuthDeviceSession {
   expiredDate: string
   deviceId: string
   userId: string
+  expiredRefreshTokens: string[]
 }
 
 export interface User {
   id: string,
   accountData: AccountData,
-  emailConfirmation: EmailConfirmation
+  emailConfirmation: EmailConfirmation,
 }
 
 // Query Params

@@ -27,7 +27,7 @@ export const authService = {
         confirmationCode: uuid(),
         expirationDate: add(new Date(), {days: 3}),
         isConfirmed: false
-      }
+      },
     }
 
     await usersRepository.createUser(newUser)
@@ -58,8 +58,5 @@ export const authService = {
       console.error(e)
       return false
     }
-  },
-  async setExpiredToken(userId: string, token: string) {
-    return usersRepository.setExpiredToken(userId, token)
   }
 }

@@ -2,6 +2,7 @@ import {jwtService} from '../application/jwt-service';
 import {settings} from '../settings';
 import {sessionsRepository} from '../repositories/sessions-repository/sessions-repository';
 import {AuthDeviceSession} from '../utils/interfaces';
+import {usersRepository} from '../repositories/users-repository/users-repository';
 
 
 export const sessionsService = {
@@ -14,7 +15,8 @@ export const sessionsService = {
       deviceId,
       userId,
       lastActivatedDate: issueAt,
-      expiredDate
+      expiredDate,
+      expiredRefreshTokens: []
     }
 
     await sessionsRepository.setNewSession(newSession)
@@ -24,5 +26,8 @@ export const sessionsService = {
   },
   async removeSession(deviceId: string) {
     return sessionsRepository.removeSession(deviceId)
+  },
+  async setExpiredToken(userId: string, deviceId: string, token: string) {
+    return sessionsRepository.setExpiredToken(userId, deviceId, token)
   }
 }
