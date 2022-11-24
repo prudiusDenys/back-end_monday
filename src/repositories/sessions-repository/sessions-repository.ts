@@ -1,4 +1,4 @@
-import {authDevicesSessions, users} from '../db';
+import {authDevicesSessions} from '../db';
 import {AuthDeviceSession} from '../../utils/interfaces';
 
 export const sessionsRepository = {

@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {body, cookie, header, validationResult} from 'express-validator';
+import {body, cookie, validationResult} from 'express-validator';
 import {authRepository} from '../repositories/auth-repository/auth-repository';
 import {jwtService} from '../application/jwt-service';
 import {authService} from '../services/auth-service';
@@ -111,6 +111,7 @@ authRouter.post('/logout',
           return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
             .then(session => {
               if (!session) return true
+              console.log(session.expiredRefreshTokens)
               if (session.expiredRefreshTokens.includes(value)) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
