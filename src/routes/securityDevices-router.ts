@@ -16,7 +16,7 @@ securityDevicesRouter.get('/devices',
           return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
             .then(session => {
               if (!session) return true
-              if (session.lastActiveDate !== tokenData.issueAt) {
+              if (session.expiredRefreshTokens.includes(value)) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })
@@ -48,7 +48,7 @@ securityDevicesRouter.delete('/devices',
           return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
             .then(session => {
               if (!session) return true
-              if (session.lastActiveDate !== tokenData.issueAt) {
+              if (session.expiredRefreshTokens.includes(value)) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })
@@ -80,7 +80,7 @@ securityDevicesRouter.delete('/devices/:deviceId',
           return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
             .then(session => {
               if (!session) return true
-              if (session.lastActiveDate !== tokenData.issueAt) {
+              if (session.expiredRefreshTokens.includes(value)) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })
