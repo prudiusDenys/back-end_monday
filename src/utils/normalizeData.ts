@@ -62,7 +62,7 @@ export const normalizeSecurityDevices = (authDevicesSessions: AuthDeviceSession[
     return {
       ip: session.ip,
       title: session.title,
-      lastActivatedDate: session.lastActivatedDate,
+      lastActiveDate: session.lastActiveDate,
       expiredDate: session.expiredDate,
       deviceId: session.deviceId
     }

@@ -66,7 +66,7 @@ authRouter.post('/refresh-token',
           return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
             .then(session => {
               if (!session) return true
-              if (session.lastActivatedDate !== tokenData.issueAt) {
+              if (session.lastActiveDate !== tokenData.issueAt) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })

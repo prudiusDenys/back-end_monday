@@ -13,7 +13,7 @@ export const sessionsService = {
       title,
       deviceId,
       userId,
-      lastActivatedDate: issueAt,
+      lastActiveDate: issueAt,
       expiredDate,
       expiredRefreshTokens: []
     }

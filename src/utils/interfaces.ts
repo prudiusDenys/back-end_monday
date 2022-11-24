@@ -41,7 +41,7 @@ interface EmailConfirmation {
 export interface AuthDeviceSession {
   ip: string
   title: string
-  lastActivatedDate: string
+  lastActiveDate: string
   expiredDate: string
   deviceId: string
   userId: string
