@@ -10,7 +10,7 @@ export interface VerifiedUserByTokenResponse {
 
 export const jwtService = {
   async createJWTAccessToken(userId: string) {
-    const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: 10})
+    const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: '1h'})
     return {accessToken: token}
 
   },

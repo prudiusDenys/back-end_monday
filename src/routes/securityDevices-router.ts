@@ -9,7 +9,6 @@ import {sessionsRepositoryQuery} from '../repositories/sessions-repository/sessi
 export const securityDevicesRouter = Router({})
 
 securityDevicesRouter.get('/devices',
-  cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
   cookie('refreshToken').custom(value => {
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
       .then((tokenData) => {
@@ -42,7 +41,6 @@ securityDevicesRouter.get('/devices',
   })
 
 securityDevicesRouter.delete('/devices',
-  cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
   cookie('refreshToken').custom(value => {
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
       .then((tokenData) => {
@@ -75,7 +73,6 @@ securityDevicesRouter.delete('/devices',
   })
 
 securityDevicesRouter.delete('/devices/:deviceId',
-  cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
   cookie('refreshToken').custom(value => {
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
       .then((tokenData) => {
