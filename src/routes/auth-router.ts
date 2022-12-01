@@ -66,7 +66,7 @@ authRouter.post('/refresh-token',
           return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
             .then(session => {
               if (!session) return true
-              if (session.lastActiveDate !== tokenData.issueAt) {
+              if (session.expiredRefreshTokens.includes(value)) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
             })
@@ -89,6 +89,7 @@ authRouter.post('/refresh-token',
     }: any = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
 
     if (userId) {
+      await sessionsService.updateLastActiveDateSession(userId, deviceId)
       await sessionsService.setExpiredToken(userId, deviceId, req.cookies.refreshToken)
       const token = await jwtService.createJWTAccessToken(userId)
       const refreshToken = await jwtService.createJWTRefreshToken(userId, deviceId)
@@ -111,7 +112,6 @@ authRouter.post('/logout',
           return sessionsRepositoryQuery.findSessionByDeviceId(tokenData.deviceId)
             .then(session => {
               if (!session) return true
-              console.log(session.expiredRefreshTokens)
               if (session.expiredRefreshTokens.includes(value)) {
                 return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
               }
@@ -136,6 +136,7 @@ authRouter.post('/logout',
 
     if (userId) {
       await sessionsService.setExpiredToken(userId, deviceId, req.cookies.refreshToken)
+      await sessionsService.removeSession(deviceId)
       res.sendStatus(204)
     } else {
       res.sendStatus(401)

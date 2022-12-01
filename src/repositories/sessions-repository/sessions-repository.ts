@@ -5,6 +5,9 @@ export const sessionsRepository = {
   async setNewSession(newSession: AuthDeviceSession) {
     await authDevicesSessions.insertOne(newSession)
   },
+  async updateLastActiveDateSession(userId: string, deviceId: string, issueAt: string) {
+    await authDevicesSessions.updateOne({userId, deviceId}, {$set: {lastActiveDate: issueAt}})
+  },
   async removeAllSessions(userId: string, deviceId: string) {
     await authDevicesSessions.deleteMany({userId, deviceId: {$nin: [deviceId]}})
   },
