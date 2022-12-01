@@ -32,7 +32,6 @@ export const countingRequestsMiddleware = (req: Request, res: Response, next: Ne
     return next()
   }
   if (((request.date - nowDate) / 1000) > -10 && request.attempts > 5) {
-    request.attempts = 0
     res.sendStatus(429)
   }
 }
