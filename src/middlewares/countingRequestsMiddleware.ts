@@ -12,21 +12,27 @@ export const countingRequestsMiddleware = (req: Request, res: Response, next: Ne
       date: new Date()
     }
     requests.push(requestData)
-    next()
+   return next()
   }
 
   const nowDate: any = new Date()
 
-  if (((request.date - nowDate) / 1000) > -10 && request.attempts < 5) {
-    request.attempts += 1
-    next()
-  } else if (((request.date - nowDate) / 1000) > -10 && request.attempts >= 5) {
-    request.attempts = 0
-    request.date = new Date()
-    res.sendStatus(429)
-  } else {
+  if (((request.date - nowDate) / 1000) < -10) {
     request.date = new Date()
     request.attempts = 1
-    next()
+    return next()
+  }
+
+  request.attempts += 1
+
+  if (((request.date - nowDate) / 1000) > -10 && request.attempts <= 5) {
+    if (request.attempts === 0) {
+      request.date = new Date()
+    }
+    return next()
+  }
+  if (((request.date - nowDate) / 1000) > -10 && request.attempts > 5) {
+    request.attempts = 0
+    res.sendStatus(429)
   }
 }
