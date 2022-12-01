@@ -146,6 +146,7 @@ authRouter.post('/logout',
   })
 
 authRouter.post('/registration',
+  countingRequestsMiddleware,
   body('email').isEmail().trim().withMessage({message: 'email is incorrect', field: 'email'}),
   body('email').custom(value => {
     return usersRepository.findUserByEmail(value).then(user => {
@@ -187,6 +188,7 @@ authRouter.post('/registration',
   })
 
 authRouter.post('/registration-confirmation',
+  countingRequestsMiddleware,
   body('code').isString().trim().withMessage({message: 'code is incorrect', field: 'code'}),
   body('code').custom((value, {req}) => {
     return usersRepository.findUserByConfirmationCode(value).then(user => {
@@ -220,6 +222,7 @@ authRouter.post('/registration-confirmation',
   })
 
 authRouter.post('/registration-email-resending',
+  countingRequestsMiddleware,
   body('email').isEmail().trim().withMessage({message: 'email is incorrect', field: 'email'}),
   body('email').custom((value) => {
     return usersRepository.findUserByEmail(value).then(user => {
