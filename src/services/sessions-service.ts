@@ -21,7 +21,7 @@ export const sessionsService = {
     await sessionsRepository.setNewSession(newSession)
   },
   async updateLastActiveDateSession(userId: string, deviceId: string) {
-    await sessionsRepository.updateLastActiveDateSession(userId, deviceId, new Date().toDateString())
+    await sessionsRepository.updateLastActiveDateSession(userId, deviceId, new Date().toISOString())
   },
   async removeAllSessions(userId: string, deviceId: string) {
     await sessionsRepository.removeAllSessions(userId, deviceId)

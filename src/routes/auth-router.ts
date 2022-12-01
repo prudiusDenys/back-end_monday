@@ -10,6 +10,7 @@ import {settings} from '../settings';
 import {uuid} from 'uuidv4';
 import {sessionsService} from '../services/sessions-service';
 import {sessionsRepositoryQuery} from '../repositories/sessions-repository/sessions-repositoryQuery';
+import {countingRequestsMiddleware} from '../middlewares/countingRequestsMiddleware';
 
 export const authRouter = Router({})
 
@@ -23,6 +24,7 @@ authRouter.get('/me', authMiddlewareBearer, async (req: Request, res: Response) 
   })
 
 authRouter.post('/login',
+  countingRequestsMiddleware,
   body('loginOrEmail').isString().trim().withMessage({message: 'loginOrEmail is incorrect', field: 'loginOrEmail'}),
   body('password').isString().trim().withMessage({message: 'password is incorrect', field: 'password'}),
   async (req: Request, res: Response) => {
@@ -48,7 +50,7 @@ authRouter.post('/login',
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure: true
+        secure: false
       }).header({
         'Retry-After': 5
       }).status(200).json(token)
@@ -96,7 +98,7 @@ authRouter.post('/refresh-token',
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure: true
+        secure: false
       }).status(200).json(token)
     } else {
       res.sendStatus(401)
