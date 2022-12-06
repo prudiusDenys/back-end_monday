@@ -39,8 +39,7 @@ export const countingRequestsMiddleware = (req: Request, res: Response, next: Ne
 
   if (apiRequestTime < limitSecondsRate && urlData.attempts <= maxAttempts) {
     return next()
-  }
-  if (apiRequestTime < limitSecondsRate && urlData.attempts > maxAttempts) {
+  } else {
     res.sendStatus(429)
   }
 }
