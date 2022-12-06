@@ -20,7 +20,8 @@ export const countingRequestsMiddleware = (req: Request, res: Response, next: Ne
 
   const nowDate: any = new Date()
 
-  if (((request.date - nowDate) / 1000) < -10) {
+
+  if (((request.date - nowDate) / 1000) <= -10) {
     request.date = new Date()
     request.attempts = 1
     return next()
