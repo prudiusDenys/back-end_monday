@@ -107,7 +107,7 @@ authRouter.post('/refresh-token',
 
 authRouter.post('/logout',
   cookie('refreshToken').isJWT().withMessage({message: 'refreshToken is incorrect', field: 'refreshToken'}),
-  cookie('refreshToken').custom(value => {
+  cookie('refreshToken').custom((value) => {
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
       .then((tokenData) => {
         if (tokenData) {
@@ -139,6 +139,7 @@ authRouter.post('/logout',
     if (userId) {
       await sessionsService.setExpiredToken(userId, deviceId, req.cookies.refreshToken)
       await sessionsService.removeSession(deviceId)
+      // res.clearCookie('refreshToken')
       res.sendStatus(204)
     } else {
       res.sendStatus(401)

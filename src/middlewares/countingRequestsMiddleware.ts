@@ -2,6 +2,9 @@ import {NextFunction, Request, Response} from 'express';
 
 const requests: any[] = [];
 
+//TODO check url. because now if we 2 requets to login and then 1 request to registration.
+// It should 2 attemptsfor login and 1 to reg.
+
 export const countingRequestsMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const request = requests.find(request => request.api === req.ip)
 
