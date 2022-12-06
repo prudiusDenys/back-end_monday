@@ -1,5 +1,5 @@
 import {Blog, BlogsQueryParams, QueryParams} from '../../utils/interfaces';
-import {blogs, posts} from '../db';
+import {Blogs, posts} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 
 export const blogsRepositoryQuery = {
@@ -11,16 +11,16 @@ export const blogsRepositoryQuery = {
       pageSize = 10
     } = data
 
-    const allBlogs = await blogs
-      .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {}).toArray()
+    const allBlogs = await Blogs
+      .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {}).lean()
 
-    const items = await blogs
+    const items = await Blogs
       .find(data.searchNameTerm ? {'name': {$regex: new RegExp(data.searchNameTerm, 'i')}} : {})
-      .project({_id: 0})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
-      .toArray()
+      .select('-__v -_id')
+      .lean()
 
     return {
       pageSize,
@@ -55,7 +55,7 @@ export const blogsRepositoryQuery = {
       pagesCount: calcPagesCount(allPostsByBlogger.length, +pageSize)
     }
   },
-  async findBlogger(id: string): Promise<Blog | null> {
-    return await blogs.findOne({id})
+  async findBlogger(id: string): Promise<any> {
+    return Blogs.findOne({id}).select('-__v -_id')
   }
 }

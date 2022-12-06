@@ -24,14 +24,14 @@ export const blogsService = {
 
     return {value: newUser}
   },
-  async editBlogger(id: string, name: string, websiteUrl: string) {
+  async editBlogger(id: string, name: string, websiteUrl: string, description: string) {
     const errorMessage = handleBloggersErrors(name, websiteUrl);
 
     if (errorMessage.errorsMessages.length) {
       return {error: errorMessage}
     }
 
-    const res = await blogsRepository.editBlogger(id, name, websiteUrl)
+    const res = await blogsRepository.editBlogger(id, name, websiteUrl, description)
 
     if (res) {
       return {status: 'success'}
@@ -41,11 +41,6 @@ export const blogsService = {
   },
   async deleteBlogger(id: string) {
     const res = await blogsRepository.deleteBlogger(id)
-
-    if (res > 0) {
-      return {status: 'success'}
-    } else {
-      return {status: 'notFound'}
-    }
+    return res > 0;
   }
 }

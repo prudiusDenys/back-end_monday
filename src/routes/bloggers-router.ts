@@ -9,11 +9,8 @@ import {BlogsQueryParams} from '../utils/interfaces';
 export const bloggersRouter = Router({})
 
 bloggersRouter.get('/', async (req: Request<{}, {}, {}, BlogsQueryParams>, res: Response) => {
-  const data = await blogsRepositoryQuery.getAllBloggers(req.query)
-
-  const normalizedBlogs = normalizeAllBlogsAndPosts(data)
-
-  res.status(200).json(normalizedBlogs)
+  const allBloggers = await blogsRepositoryQuery.getAllBloggers(req.query)
+  res.status(200).json(allBloggers)
 })
 
 bloggersRouter.get('/:blogId/posts', async (req: Request<any, {}, {}, BlogsQueryParams>, res: Response) => {
@@ -28,11 +25,10 @@ bloggersRouter.get('/:blogId/posts', async (req: Request<any, {}, {}, BlogsQuery
 })
 
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
-  const blogger: any = await blogsRepositoryQuery.findBlogger(req.params.id)
+  const blogger = await blogsRepositoryQuery.findBlogger(req.params.id)
 
   if (blogger) {
-    const normalizedBlog = removeMongoId(blogger)
-    res.status(200).json(normalizedBlog);
+    res.status(200).json(blogger);
   } else {
     res.sendStatus(404);
   }
@@ -41,7 +37,7 @@ bloggersRouter.get('/:id', async (req: Request, res: Response) => {
 bloggersRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
   const {name, websiteUrl, description} = req.body
 
-  const data: any = await blogsService.createBlogger(name, websiteUrl, description)
+  const data = await blogsService.createBlogger(name, websiteUrl, description)
 
   if (data?.value) {
     const normalizedBlog = removeMongoId(data.value)
@@ -67,9 +63,9 @@ bloggersRouter.post('/:blogId/posts', authMiddleware, async (req: Request, res: 
 
 bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   const id = req.params.id;
-  const {name, websiteUrl} = req.body
+  const {name, websiteUrl, description} = req.body
 
-  const data = await blogsService.editBlogger(id, name, websiteUrl)
+  const data = await blogsService.editBlogger(id, name, websiteUrl, description)
 
   if (data.status === 'success') {
     res.sendStatus(204)
@@ -83,9 +79,9 @@ bloggersRouter.put('/:id', authMiddleware, async (req: Request, res: Response) =
 })
 
 bloggersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-  const data = await blogsService.deleteBlogger(req.params.id)
+  const response = await blogsService.deleteBlogger(req.params.id)
 
-  if (data.status === 'success') {
+  if (response) {
     res.sendStatus(204)
   } else {
     res.sendStatus(404)

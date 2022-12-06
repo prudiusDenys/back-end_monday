@@ -1,18 +1,18 @@
 import {Blog} from '../../utils/interfaces';
-import {blogs} from '../db';
+import {Blogs} from '../db';
 
 export const blogsRepository = {
   async createBlogger(newUser: Blog) {
-    await blogs.insertOne(newUser)
+    await Blogs.create(newUser)
   },
-  async editBlogger(id: string, name: string, websiteUrl: string) {
-    const res = await blogs.updateOne({id}, {
-      $set: {name, websiteUrl}
+  async editBlogger(id: string, name: string, websiteUrl: string, description: string) {
+    const res = await Blogs.updateOne({id}, {
+      $set: {name, websiteUrl, description}
     })
     return res.matchedCount
   },
   async deleteBlogger(id: string) {
-    const res = await blogs.deleteOne({id})
+    const res = await Blogs.deleteOne({id})
     return res.deletedCount
   }
 }
