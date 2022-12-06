@@ -3,53 +3,44 @@ import {NextFunction, Request, Response} from 'express';
 const requests: any = [];
 
 export const countingRequestsMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const request = requests.find((request: any) => request.api === req.ip)
+  const nowDate: any = new Date()
+  const limitSecondsRate = 10
+  const maxAttempts = 5
 
-  if (!request) {
+  const requestApi = requests.find((request: any) => request.api === req.ip)
+
+  if (!requestApi) {
     const requestData = {
       api: req.ip,
       attemptsData: [
-        {
-          url: req.url,
-          attempts: 1,
-          date: new Date()
-        }
+        {url: req.url, attempts: 1, date: nowDate}
       ]
     }
     requests.push(requestData)
-   return next()
-  }
-
-  const attemptData =  request.attemptsData.find((attemptData: any) => attemptData.url === req.url)
-
-  if(!attemptData){
-    request.attemptsData.push({
-      url: req.url,
-      attempts: 1,
-      date: new Date()
-    })
     return next()
   }
 
-  const nowDate: any = new Date()
-  const limitSecondsRate= 10
-  const maxAttempts = 5
-  const apiRequestTime = (nowDate - attemptData.date) / 1000
+  const urlData = requestApi.attemptsData.find((urlData: any) => urlData.url === req.url)
 
+  if (!urlData) {
+    requestApi.attemptsData.push({url: req.url, attempts: 1, date: nowDate})
+    return next()
+  }
 
+  const apiRequestTime = (nowDate - urlData.date) / 1000
 
   if (apiRequestTime > limitSecondsRate) {
-    attemptData.date = new Date()
-    attemptData.attempts = 1
+    urlData.date = nowDate
+    urlData.attempts = 1
     return next()
   }
 
-  attemptData.attempts +=1
+  urlData.attempts += 1
 
-  if (apiRequestTime < limitSecondsRate && attemptData.attempts <= maxAttempts) {
+  if (apiRequestTime < limitSecondsRate && urlData.attempts <= maxAttempts) {
     return next()
   }
-  if (apiRequestTime < limitSecondsRate && attemptData.attempts > maxAttempts) {
+  if (apiRequestTime < limitSecondsRate && urlData.attempts > maxAttempts) {
     res.sendStatus(429)
   }
 }
