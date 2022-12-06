@@ -28,9 +28,7 @@ export const countingRequestsMiddleware = (req: Request, res: Response, next: Ne
 
   request.attempts += 1
 
-  //-1 > -10
-
-  if (((request.date - nowDate) / 1000) > -10 && request.attempts < 5) {
+  if (((request.date - nowDate) / 1000) > -10 && request.attempts <= 5) {
     if (request.attempts === 0) {
       request.date = new Date()
     }
