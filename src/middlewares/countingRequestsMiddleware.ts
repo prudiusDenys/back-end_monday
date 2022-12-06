@@ -2,9 +2,6 @@ import {NextFunction, Request, Response} from 'express';
 
 const requests: any[] = [];
 
-//TODO check url. because now if we 2 requets to login and then 1 request to registration.
-// It should 2 attemptsfor login and 1 to reg.
-
 export const countingRequestsMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const request = requests.find(request => request.api === req.ip)
 
@@ -19,8 +16,11 @@ export const countingRequestsMiddleware = (req: Request, res: Response, next: Ne
   }
 
   const nowDate: any = new Date()
+  const limitSecondsRate= 10
+  const maxAttempts = 5
+  const apiRequestTime = (nowDate - request.date) / 1000
 
-  if (((request.date - nowDate) / 1000) < -10) {
+  if (apiRequestTime > limitSecondsRate) {
     request.date = new Date()
     request.attempts = 1
     return next()
@@ -28,13 +28,13 @@ export const countingRequestsMiddleware = (req: Request, res: Response, next: Ne
 
   request.attempts += 1
 
-  if (((request.date - nowDate) / 1000) > -10 && request.attempts <= 5) {
-    if (request.attempts === 0) {
-      request.date = new Date()
-    }
+  if (apiRequestTime < limitSecondsRate && request.attempts <= maxAttempts) {
+    // if (request.attempts === 0) {
+    //   request.date = new Date()
+    // }
     return next()
   }
-  if (((request.date - nowDate) / 1000) > -10 && request.attempts > 5) {
+  if (apiRequestTime < limitSecondsRate && request.attempts > maxAttempts) {
     res.sendStatus(429)
   }
 }
