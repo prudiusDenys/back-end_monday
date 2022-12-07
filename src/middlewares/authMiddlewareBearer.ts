@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import {jwtService} from '../application/jwt-service';
-import {users} from '../repositories/db';
 import {settings} from '../settings';
+import {Users} from '../mongoose/models';
 
 export const authMiddlewareBearer = async (req: Request, res: Response, next: NextFunction) => {
   const authValue = req.headers.authorization
@@ -16,7 +16,7 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
   const tokenData = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
 
   if (tokenData) {
-    const user = await users.findOne({id: tokenData.userId})
+    const user = await Users.findOne({id: tokenData.userId}).select('-__v -_id')
     if (user) {
       req.user = user
       next()

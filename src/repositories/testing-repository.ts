@@ -1,14 +1,13 @@
-import {comments, Blogs, posts, users, authDevicesSessions} from './db';
 import {videos} from '../routes/video-router';
-
+import {AuthDevicesSessions, Blogs, Comments, Posts, Users} from '../mongoose/models';
 
 export const testingRepository = {
   async removeAllData() {
     videos.splice(0, videos.length)
-    await posts.deleteMany({})
+    await Posts.deleteMany({})
     await Blogs.deleteMany({})
-    await users.deleteMany({})
-    await comments.deleteMany({})
-    await authDevicesSessions.deleteMany({})
+    await Users.deleteMany({})
+    await Comments.deleteMany({})
+    await AuthDevicesSessions.deleteMany({})
   }
 }

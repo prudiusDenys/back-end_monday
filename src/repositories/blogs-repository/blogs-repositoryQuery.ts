@@ -1,6 +1,6 @@
-import {Blog, BlogsQueryParams, QueryParams} from '../../utils/interfaces';
-import {Blogs, posts} from '../db';
+import {BlogsQueryParams, QueryParams} from '../../utils/interfaces';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
+import {Blogs, Posts} from '../../mongoose/models';
 
 export const blogsRepositoryQuery = {
   async getAllBloggers(data: BlogsQueryParams) {
@@ -38,14 +38,14 @@ export const blogsRepositoryQuery = {
       pageSize = 10,
     } = data
 
-    const allPostsByBlogger = await posts.find({blogId}).toArray()
+    const allPostsByBlogger = await Posts.find({blogId}).lean()
 
-    const items = await posts
+    const items = await Posts
       .find({blogId})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
-      .toArray()
+      .lean()
 
     return {
       pageSize,

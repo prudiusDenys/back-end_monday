@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import {users} from '../db';
 import {User} from '../../utils/interfaces';
+import {Users} from '../../mongoose/models';
 
 interface loginInputModel {
   loginOrEmail: string
@@ -9,7 +9,7 @@ interface loginInputModel {
 
 export const authRepository = {
   async checkCredentials(loginData: loginInputModel): Promise<User | null> {
-    const user = await users.findOne({'accountData.login': loginData.loginOrEmail})
+    const user = await Users.findOne({'accountData.login': loginData.loginOrEmail}).select('-__v -_id')
 
     if (!user) return null
 

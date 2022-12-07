@@ -25,14 +25,14 @@ export interface Comment {
   parentId: string
 }
 
-interface AccountData {
+export interface Account {
   login: string
   email: string
   password: string
   createdAt: string
 }
 
-interface EmailConfirmation {
+export interface EmailConfirmationData {
   confirmationCode: string
   expirationDate: Date
   isConfirmed: boolean
@@ -50,8 +50,8 @@ export interface AuthDeviceSession {
 
 export interface User {
   id: string,
-  accountData: AccountData,
-  emailConfirmation: EmailConfirmation,
+  accountData: Account,
+  emailConfirmation: EmailConfirmationData,
 }
 
 // Query Params

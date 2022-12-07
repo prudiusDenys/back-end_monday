@@ -1,6 +1,6 @@
 import {Post, QueryParams} from '../../utils/interfaces';
-import {comments, posts} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
+import {Comments, Posts} from '../../mongoose/models';
 
 export const postsRepositoryQuery = {
   async getAllPosts(data: QueryParams) {
@@ -11,14 +11,15 @@ export const postsRepositoryQuery = {
       pageSize = 10
     } = data
 
-    const totalCount = await posts.countDocuments()
+    const totalCount = await Posts.countDocuments()
 
-    const items = await posts
-      .find({}, {projection: {_id: 0}})
+    const items = await Posts
+      .find({})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
-      .toArray()
+      .select('-_id -__v')
+      .lean()
 
     return {
       pageSize,
@@ -29,7 +30,7 @@ export const postsRepositoryQuery = {
     }
   },
   async findPost(id: string): Promise<Post | null> {
-    return posts.findOne({id})
+    return Posts.findOne({id}).select('-__v -_id')
   },
   async findAllCommentsForSpecificPost(data: QueryParams, postId: string) {
     const {
@@ -39,17 +40,18 @@ export const postsRepositoryQuery = {
       pageSize = 10
     } = data
 
-    const post = await posts.findOne({id: postId})
+    const post = await Posts.findOne({id: postId})
 
     if (!post) return null
 
-    const commentsCount = await comments.countDocuments({parentId: postId})
+    const commentsCount = await Comments.countDocuments({parentId: postId})
 
-    const items = await comments.find({parentId: postId}, {projection: {_id: 0, parentId: 0}})
+    const items = await Comments.find({parentId: postId})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-      .toArray()
+      .lean()
+      .select('-__v -_id -parentId')
 
     return {
       pagesCount: calcPagesCount(commentsCount, +pageSize),

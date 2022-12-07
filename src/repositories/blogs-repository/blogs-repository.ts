@@ -1,5 +1,5 @@
 import {Blog} from '../../utils/interfaces';
-import {Blogs} from '../db';
+import {Blogs} from '../../mongoose/models';
 
 export const blogsRepository = {
   async createBlogger(newUser: Blog) {

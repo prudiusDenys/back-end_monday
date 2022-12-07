@@ -1,11 +1,10 @@
-import {authDevicesSessions} from '../db';
-
+import {AuthDevicesSessions} from '../../mongoose/models';
 
 export const sessionsRepositoryQuery = {
   async findAllSessions(userId: string) {
-    return authDevicesSessions.find({userId}, {projection: {_id: 0, userId: 0, expiredDate: 0, expiredRefreshTokens: 0}}).toArray()
+    return AuthDevicesSessions.find({userId}).lean().select('-__v -_id -userId -expiredDate -expiredRefreshTokens')
   },
   async findSessionByDeviceId(deviceId: string) {
-    return authDevicesSessions.findOne({deviceId})
+    return AuthDevicesSessions.findOne({deviceId}).select('-__v -_id')
   }
 }

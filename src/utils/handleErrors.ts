@@ -1,5 +1,5 @@
 import {ErrorMessage} from './interfaces';
-import {Blogs} from '../repositories/db';
+import {Blogs} from '../mongoose/models';
 
 interface PostsErrorType {
   title: string,

@@ -3,7 +3,7 @@ import {blogsRepositoryQuery} from '../repositories/blogs-repository/blogs-repos
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {handlePostsErrors} from '../utils/handleErrors';
 import {Comment, Post, User} from '../utils/interfaces';
-import {posts} from '../repositories/db';
+import {Posts} from '../mongoose/models';
 
 export const postsService = {
   async createPost(data: PostInputValue, blogId: string) {
@@ -59,7 +59,7 @@ export const postsService = {
     return {status: 'notFound'}
   },
   async createComment(postId: string, content: string, user: User): Promise<Comment | null> {
-    const post = await posts.findOne({id: postId})
+    const post = await Posts.findOne({id: postId})
 
     if (!post) return null
 
@@ -77,6 +77,5 @@ export const postsService = {
     await postsRepository.createComment({...comment})
 
     return comment
-
   }
 }

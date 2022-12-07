@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {authMiddleware} from '../middlewares/authMiddleware';
-import {normalizeAllBlogsAndPosts, removeMongoId, removeParentId} from '../utils/normalizeData';
+import {removeMongoId, removeParentId} from '../utils/normalizeData';
 import {postsRepositoryQuery} from '../repositories/posts-repository/posts-repositoryQuery';
 import {postsService} from '../services/posts-service';
 import {QueryParams} from '../utils/interfaces';
@@ -10,11 +10,8 @@ import {body, validationResult} from 'express-validator';
 export const postsRouter = Router({})
 
 postsRouter.get('/', async (req: Request<{}, {}, {}, QueryParams>, res: Response) => {
-  const data = await postsRepositoryQuery.getAllPosts(req.query)
-
-  const normalizedPosts = normalizeAllBlogsAndPosts(data)
-
-  res.status(200).json(normalizedPosts)
+  const allPosts = await postsRepositoryQuery.getAllPosts(req.query)
+  res.status(200).json(allPosts)
 })
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {

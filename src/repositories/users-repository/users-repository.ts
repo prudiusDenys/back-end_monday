@@ -1,36 +1,35 @@
-import {users} from '../db';
 import {User} from '../../utils/interfaces';
+import {Users} from '../../mongoose/models';
 
 export const usersRepository = {
   async findUserByEmail(email: string) {
-    return users.findOne({'accountData.email': email})
+    return Users.findOne({'accountData.email': email}).select('-__v -_id')
   },
   async findUserById(id: string) {
-    return users.findOne({id})
+    return Users.findOne({id}).select('-__v -_id')
   },
   async findUserByConfirmationCode(code: string) {
-    return users.findOne({'emailConfirmation.confirmationCode': code})
+    return Users.findOne({'emailConfirmation.confirmationCode': code}).select('-__v -_id')
   },
   async findUserByLogin(login: string) {
-    return users.findOne({'accountData.login': login})
+    return Users.findOne({'accountData.login': login}).select('-__v -_id')
   },
   async createUser(newUser: User) {
-    return users.insertOne(newUser)
+    return Users.create(newUser)
   },
   async updateConfirmation(userId: string) {
-    const res = await users.updateOne({id: userId}, {$set: {'emailConfirmation.isConfirmed': true}})
+    const res = await Users.updateOne({id: userId}, {$set: {'emailConfirmation.isConfirmed': true}})
     return !!res.matchedCount
   },
   async updateConfirmationCode(id: string, newConfirmationCode: string) {
-    const res = await users.findOneAndUpdate(
+    return Users.findOneAndUpdate(
       {id},
       {$set: {'emailConfirmation.confirmationCode': newConfirmationCode}},
       {returnDocument: 'after'}
-    )
-    return res.value
+    ).select('-__v -_id')
   },
   async deleteUser(userId: string) {
-    const res = await users.deleteOne({id: userId})
+    const res = await Users.deleteOne({id: userId})
     return res.deletedCount
   }
 }

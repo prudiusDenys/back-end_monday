@@ -18,8 +18,7 @@ app.set('trust proxy', true)
 app.use(cors(), express.json())
 app.use(cookieParser())
 
-// если что-то начинается на /posts, то тогда
-// router перехватывает управление и смотрит какая дальше идет часть и потом дергает конкретный обработчик
+//routes
 app.use('/videos', videoRouter)
 app.use('/blogs', bloggersRouter)
 app.use('/posts', postsRouter)
@@ -37,4 +36,3 @@ const startApp = async () => {
 }
 
 startApp().catch(() => console.dir())
-

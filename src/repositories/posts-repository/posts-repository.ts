@@ -1,5 +1,5 @@
 import {Comment, Post} from '../../utils/interfaces';
-import {comments, posts} from '../db';
+import {Comments, Posts} from '../../mongoose/models';
 
 export interface PostInputValue {
   title: string
@@ -10,10 +10,10 @@ export interface PostInputValue {
 
 export const postsRepository = {
   async createPost(newPost: Post) {
-    await posts.insertOne(newPost)
+    await Posts.create(newPost)
   },
   async editPost(id: string, data: PostInputValue) {
-    const res = await posts.updateOne({id}, {
+    const res = await Posts.updateOne({id}, {
       $set: {
         title: data.title,
         shortDescription: data.shortDescription,
@@ -24,10 +24,10 @@ export const postsRepository = {
     return res.matchedCount
   },
   async deletePost(id: string) {
-    const res = await posts.deleteOne({id})
+    const res = await Posts.deleteOne({id})
     return res.deletedCount
   },
   async createComment(comment: Comment) {
-    await comments.insertOne(comment)
+    await Comments.create(comment)
   }
 }

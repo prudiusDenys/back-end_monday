@@ -1,6 +1,6 @@
-import {users} from '../db';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 import {User, UsersQueryParams} from '../../utils/interfaces';
+import {Users} from '../../mongoose/models';
 
 
 export interface UserViewModel {
@@ -23,60 +23,60 @@ export const usersRepositoryQuery = {
     } = queryData
 
     let items
-    let totalCounts = await users.countDocuments()
+    let totalCounts = await Users.countDocuments()
 
-    items = await users.find({})
-      .project({_id: 0, password: 0})
+    items = await Users.find({})
       .skip(calcSkipPages(+pageNumber, +pageSize))
       .limit(+pageSize)
       .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-      .toArray() as User[]
+      .lean()
+      .select('-__v -_id -password')
 
     if (searchLoginTerm && searchEmailTerm) {
-      const matchedUsers = await users.find({
+      const matchedUsers = await Users.find({
         $or: [
           {'login': {$regex: new RegExp(searchLoginTerm, 'i')}},
           {'email': {$regex: new RegExp(searchEmailTerm, 'i')}}
         ]
-      }).toArray()
+      }).lean().select('-__v -_id')
 
-      items = await users.find({
+      items = await Users.find({
         $or: [
           {'login': {$regex: new RegExp(searchLoginTerm, 'i')}},
           {'email': {$regex: new RegExp(searchEmailTerm, 'i')}}
         ]
       })
-        .project({_id: 0, password: 0})
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-        .toArray() as User[]
+        .lean()
+        .select('-__v -_id -password')
 
       totalCounts = matchedUsers.length
     }
 
     if (searchLoginTerm && !searchEmailTerm) {
-      const matchedUsers = await users.find({'login': {$regex: new RegExp(searchLoginTerm, 'i')}}).toArray()
+      const matchedUsers = await Users.find({'login': {$regex: new RegExp(searchLoginTerm, 'i')}}).lean().select('-__v -_id')
 
-      items = await users.find({'login': {$regex: new RegExp(searchLoginTerm, 'i')}})
-        .project({_id: 0, password: 0})
+      items = await Users.find({'login': {$regex: new RegExp(searchLoginTerm, 'i')}})
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-        .toArray() as User[]
+        .lean()
+        .select('-__v -_id -password')
 
       totalCounts = matchedUsers.length
     }
 
     if (searchEmailTerm && !searchLoginTerm) {
-      const matchedUsers = await users.find({'email': {$regex: new RegExp(searchEmailTerm, 'i')}}).toArray()
+      const matchedUsers = await Users.find({'email': {$regex: new RegExp(searchEmailTerm, 'i')}}).lean().select('-__v -_id')
 
-        items = await users.find({'email': {$regex: new RegExp(searchEmailTerm, 'i')}})
-        .project({_id: 0, password: 0})
+      items = await Users.find({'email': {$regex: new RegExp(searchEmailTerm, 'i')}})
         .skip(calcSkipPages(+pageNumber, +pageSize))
         .limit(+pageSize)
         .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
-        .toArray() as User[]
+        .lean()
+        .select('-__v -_id -password')
 
       totalCounts = matchedUsers.length
     }
