@@ -15,9 +15,9 @@ export const jwtService = {
 
   },
   async createJWTRefreshToken(userId: string, deviceId: string) {
-    return  jwt.sign({userId, deviceId}, settings.JWT_SECRET_REFRESH, {expiresIn: '1d'})
+    return jwt.sign({userId, deviceId}, settings.JWT_SECRET_REFRESH, {expiresIn: '1d'})
   },
-  async verifyUserByToken(token: string, secretKey: string) {
+  async verifyUserByToken(token: string, secretKey: string): Promise<VerifiedUserByTokenResponse | null> {
     try {
       const result: any = await jwt.verify(token, secretKey)
       return {
@@ -25,7 +25,7 @@ export const jwtService = {
         deviceId: result.deviceId,
         issueAt: new Date(result.iat * 1000).toISOString(),
         expiredDate: new Date(result.exp * 1000).toISOString()
-      } as VerifiedUserByTokenResponse
+      }
     } catch (e) {
       return null
     }
