@@ -275,26 +275,6 @@ authRouter.post('/new-password',
     field: 'newPassword'
   }),
   body('recoveryCode').isString().trim().withMessage({message: 'recoveryCode is incorrect', field: 'recoveryCode'}),
-  // cookie('refreshToken').custom((value, {req}) => {
-  //   return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
-  //     .then((tokenData) => {
-  //       if (tokenData) {
-  //         return usersRepository.findUserById(tokenData.userId)
-  //           .then(user => {
-  //             if (
-  //               user && user.passwordRecovery
-  //               &&
-  //               (user.passwordRecovery.recoveryCode !== req.body.recoveryCode ||
-  //                 user.passwordRecovery.expirationDate < new Date().getTime())
-  //             ) {
-  //               return Promise.reject({message: 'newPassword is incorrect', field: 'newPassword'})
-  //             }
-  //           })
-  //       } else {
-  //         return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
-  //       }
-  //     })
-  // }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -305,8 +285,8 @@ authRouter.post('/new-password',
 
     const result = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
 
-    if (result) {
-      await usersService.updateUserPassword(result.userId, req.body.newPassword)
-    }
+    if (!result) return res.sendStatus(400)
+
+    await usersService.updateUserPassword(result.userId, req.body.newPassword)
     res.sendStatus(204)
   })
