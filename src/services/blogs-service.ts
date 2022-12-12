@@ -1,6 +1,7 @@
 import {Blog} from '../utils/interfaces';
 import {handleBloggersErrors} from '../utils/handleErrors';
 import {Blogs} from '../mongoose/models';
+import {log} from 'util';
 
 const blog = new Blogs()
 
@@ -22,8 +23,10 @@ export const blogsService = {
       createdAt: new Date().toISOString()
     }
 
+    console.log('helo232')
+
     await blog.createBlogger(newUser)
-    await blog.save()
+    //await blog.save() app is crashed
 
     return {value: newUser}
   },
