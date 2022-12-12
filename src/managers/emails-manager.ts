@@ -22,5 +22,25 @@ export const emailsManager = {
         "      </p>\n" +
         "    "
     });
+  },
+  async sendPasswordRecoveryEmail(email: string, passwordRecoveryCode: string) {
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: 'denisdevelopertestacc@gmail.com',
+        pass: 'sbxgofqtlxkbvgss',
+      },
+    });
+
+    return transporter.sendMail({
+      from: '"Denis" <denisdevelopertestacc@gmail.com>', // sender address
+      to: email, // list of receivers
+      subject: "Password recovery", // Subject line
+      html: " <h1>Password recovery</h1>\n" +
+        "       <p>To finish password recovery please follow the link below:\n" +
+        "          <a href='https://somesite.com/password-recovery?recoveryCode="+passwordRecoveryCode+"'>recovery password</a>\n" +
+        "      </p>\n" +
+        "    "
+    });
   }
 }

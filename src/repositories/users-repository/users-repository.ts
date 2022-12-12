@@ -28,6 +28,20 @@ export const usersRepository = {
       {returnDocument: 'after'}
     ).select('-__v -_id')
   },
+  async setPasswordRecoveryData(userId: string, passwordRecoveryCode: string, expirationDate: number) {
+
+    await Users.updateOne({id: userId}, {
+      $set: {
+        'passwordRecovery.recoveryCode': passwordRecoveryCode,
+        'passwordRecovery.expirationDate': expirationDate,
+
+      }
+    })
+  },
+  async updatePassword(userid: string, hash: string) {
+    await Users.updateOne({id: userid}, {$set: {'accountData.password': hash}})
+
+  },
   async deleteUser(userId: string) {
     const res = await Users.deleteOne({id: userId})
     return res.deletedCount

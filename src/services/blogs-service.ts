@@ -1,6 +1,8 @@
 import {Blog} from '../utils/interfaces';
 import {handleBloggersErrors} from '../utils/handleErrors';
-import {blogsRepository} from '../repositories/blogs-repository/blogs-repository';
+import {Blogs} from '../mongoose/models';
+
+const blog = new Blogs()
 
 export const blogsService = {
   async createBlogger(name: string, websiteUrl: string, description: string) {
@@ -20,7 +22,8 @@ export const blogsService = {
       createdAt: new Date().toISOString()
     }
 
-    await blogsRepository.createBlogger(newUser)
+    await blog.createBlogger(newUser)
+    await blog.save()
 
     return {value: newUser}
   },
@@ -31,7 +34,8 @@ export const blogsService = {
       return {error: errorMessage}
     }
 
-    const res = await blogsRepository.editBlogger(id, name, websiteUrl, description)
+    const res = await blog.editBlogger(id, name, websiteUrl, description)
+    await blog.save()
 
     if (res) {
       return {status: 'success'}
@@ -40,7 +44,11 @@ export const blogsService = {
     }
   },
   async deleteBlogger(id: string) {
-    const res = await blogsRepository.deleteBlogger(id)
+
+
+
+    const res = await blog.deleteBlogger(id)
+    await blog.save()
     return res > 0;
   }
 }

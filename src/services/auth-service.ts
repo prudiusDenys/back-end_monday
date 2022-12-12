@@ -58,5 +58,15 @@ export const authService = {
       console.error(e)
       return false
     }
+  },
+  async recoveryPassword(email: string) {
+    const user = await usersRepository.findUserByEmail(email)
+    if(!user) return
+    const passwordRecoveryCode = uuid()
+    const expirationDate = new Date().setTime(new Date().getTime() + (3 * 60 * 1000)) // expired in 3 minute
+
+    await usersRepository.setPasswordRecoveryData(user.id, passwordRecoveryCode, expirationDate)
+
+    await emailsManager.sendPasswordRecoveryEmail(email, passwordRecoveryCode)
   }
 }

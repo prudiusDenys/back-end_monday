@@ -1,5 +1,15 @@
 import mongoose from 'mongoose';
-import {Account, AuthDeviceSession, Blog, Comment, EmailConfirmationData, Post, User} from '../utils/interfaces';
+import {
+  Account,
+  AuthDeviceSession,
+  Blog,
+  Comment,
+  EmailConfirmationData,
+  PasswordRecovery,
+  Post,
+  User
+} from '../utils/interfaces';
+import {Blogs} from './models';
 
 const AccountSchema = new mongoose.Schema<Account>({
   login: {type: String, required: true},
@@ -12,13 +22,33 @@ const EmailConfirmation = new mongoose.Schema<EmailConfirmationData>({
   expirationDate: {type: Date, required: true},
   isConfirmed: {type: Boolean, required: true}
 })
+const PasswordRecovery = new mongoose.Schema<PasswordRecovery>({
+  recoveryCode: {type: String, required: true},
+  expirationDate: {type: Number, required: true}
+})
 
-export const BlogSchema = new mongoose.Schema<Blog>({
+export const BlogSchema: any = new mongoose.Schema<Blog>({
   id: {type: String, required: true},
   name: {type: String, required: true},
   websiteUrl: {type: String, required: true},
   createdAt: {type: String, required: true},
   description: {type: String, required: true}
+}, {
+  methods: {
+    async createBlogger(newUser: Blog) {
+      await Blogs.create(newUser)
+    },
+    async editBlogger(id: string, name: string, websiteUrl: string, description: string) {
+      const res = await Blogs.updateOne({id}, {
+        $set: {name, websiteUrl, description}
+      })
+      return res.matchedCount
+    },
+    async deleteBlogger(id: string) {
+      const res = await Blogs.deleteOne({id})
+      return res.deletedCount
+    }
+  }
 })
 export const PostSchema = new mongoose.Schema<Post>({
   id: {type: String, required: true},
@@ -32,7 +62,8 @@ export const PostSchema = new mongoose.Schema<Post>({
 export const UserSchema = new mongoose.Schema<User>({
   id: {type: String, required: true},
   accountData: {type: AccountSchema, required: true},
-  emailConfirmation: {type: EmailConfirmation, required: true}
+  emailConfirmation: {type: EmailConfirmation, required: true},
+  passwordRecovery: {type: PasswordRecovery}
 })
 export const CommentSchema = new mongoose.Schema<Comment>({
   id: {type: String, required: true},

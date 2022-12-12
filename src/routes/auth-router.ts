@@ -11,17 +11,18 @@ import {uuid} from 'uuidv4';
 import {sessionsService} from '../services/sessions-service';
 import {sessionsRepositoryQuery} from '../repositories/sessions-repository/sessions-repositoryQuery';
 import {countingRequestsMiddleware} from '../middlewares/countingRequestsMiddleware';
+import {usersService} from '../services/users-service';
 
 export const authRouter = Router({})
 
 authRouter.get('/me', authMiddlewareBearer, async (req: Request, res: Response) => {
-    const token = req.headers.authorization!.split(' ')[1]
-    const {userId}: any = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
-    const currentUser = await usersRepository.findUserById(userId)
-    const normalizedCurrentUser = normalizeUserForAuthMe(currentUser!)
+  const token = req.headers.authorization!.split(' ')[1]
+  const {userId}: any = await jwtService.verifyUserByToken(token, settings.JWT_SECRET)
+  const currentUser = await usersRepository.findUserById(userId)
+  const normalizedCurrentUser = normalizeUserForAuthMe(currentUser!)
 
-    res.status(200).json(normalizedCurrentUser)
-  })
+  res.status(200).json(normalizedCurrentUser)
+})
 
 authRouter.post('/login',
   countingRequestsMiddleware,
@@ -249,4 +250,63 @@ authRouter.post('/registration-email-resending',
     } else {
       res.sendStatus(400)
     }
+  })
+
+authRouter.post('/password-recovery',
+  countingRequestsMiddleware,
+  body('email').isEmail().trim().withMessage({message: 'email is incorrect', field: 'email'}),
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const errorsMessages = errors.array().map(error => error.msg)
+      return res.status(400).json({errorsMessages})
+    }
+
+    await authService.recoveryPassword(req.body.email)
+
+    res.sendStatus(204)
+  })
+
+authRouter.post('/new-password',
+  countingRequestsMiddleware,
+  body('newPassword').isString().trim().isLength({min: 6, max: 20}).withMessage({
+    message: 'newPassword is incorrect',
+    field: 'newPassword'
+  }),
+  body('recoveryCode').isString().trim().withMessage({message: 'recoveryCode is incorrect', field: 'recoveryCode'}),
+  cookie('refreshToken').custom((value, {req}) => {
+    return jwtService.verifyUserByToken(value, settings.JWT_SECRET_REFRESH)
+      .then((tokenData) => {
+        if (tokenData) {
+          return usersRepository.findUserById(tokenData.userId)
+            .then(user => {
+              if (
+                user && user.passwordRecovery
+                &&
+                (user.passwordRecovery.recoveryCode !== req.body.recoveryCode ||
+                  user.passwordRecovery.expirationDate < new Date().getTime())
+              ) {
+                return Promise.reject({message: 'RecoveryCode is incorrect', field: 'RecoveryCode'})
+              }
+            })
+        } else {
+          return Promise.reject({message: 'refreshToken is incorrect', field: 'refreshToken'})
+        }
+      })
+  }),
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const errorsMessages = errors.array().map(error => error.msg)
+      return res.status(400).json({errorsMessages})
+    }
+
+    const result = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
+
+    if (result) {
+      await usersService.updateUserPassword(result.userId, req.body.newPassword)
+    }
+    res.sendStatus(204)
   })

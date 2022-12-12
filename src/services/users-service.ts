@@ -32,5 +32,9 @@ export const usersService = {
     await usersRepository.createUser({...newUser})
 
     return newUser
+  },
+  async updateUserPassword(userid: string, newPassword: string) {
+    const hash = await generateHash(10, newPassword)
+    await usersRepository.updatePassword(userid, hash)
   }
 }
