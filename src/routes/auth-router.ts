@@ -275,7 +275,7 @@ authRouter.post('/new-password',
     field: 'newPassword'
   }),
   body('recoveryCode').isString().trim().withMessage({message: 'recoveryCode is incorrect', field: 'recoveryCode'}),
-  cookie('recoveryCode').custom((value) => {
+  body('recoveryCode').custom((value) => {
     return jwtService.verifyUserByToken(value, settings.JWT_SECRET_PASSWORD_RECOVERY)
       .then(tokenData => {
         if (!tokenData) {
