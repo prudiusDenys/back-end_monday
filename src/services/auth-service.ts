@@ -4,6 +4,7 @@ import {generateHash} from '../utils/generateHash';
 import {usersRepository} from '../repositories/users-repository/users-repository';
 import {emailsManager} from '../managers/emails-manager';
 import {User} from '../utils/interfaces';
+import {jwtService} from '../application/jwt-service';
 
 export interface RegistrationInputModel {
   email: string
@@ -62,11 +63,13 @@ export const authService = {
   async recoveryPassword(email: string) {
     const user = await usersRepository.findUserByEmail(email)
     if(!user) return
-    const passwordRecoveryCode = uuid()
-    const expirationDate = new Date().setTime(new Date().getTime() + (3 * 60 * 1000)) // expired in 3 minute
+    // const passwordRecoveryCode = uuid()
+    // const expirationDate = new Date().setTime(new Date().getTime() + (3 * 60 * 1000)) // expired in 3 minute
 
-    await usersRepository.setPasswordRecoveryData(user.id, passwordRecoveryCode, expirationDate)
+    // await usersRepository.setPasswordRecoveryData(user.id, passwordRecoveryCode, expirationDate)
 
-    await emailsManager.sendPasswordRecoveryEmail(email, passwordRecoveryCode)
+    const passwordRecoveryToken = await jwtService.createJWTPasswordRecoveryToken(user.id)
+
+    await emailsManager.sendPasswordRecoveryEmail(email, passwordRecoveryToken)
   }
 }

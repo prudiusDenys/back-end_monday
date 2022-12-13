@@ -275,6 +275,14 @@ authRouter.post('/new-password',
     field: 'newPassword'
   }),
   body('recoveryCode').isString().trim().withMessage({message: 'recoveryCode is incorrect', field: 'recoveryCode'}),
+  cookie('recoveryCode').custom((value) => {
+    return jwtService.verifyUserByToken(value, settings.JWT_SECRET_PASSWORD_RECOVERY)
+      .then(tokenData => {
+        if (!tokenData) {
+          return Promise.reject({message: 'recoveryCode is incorrect', field: 'recoveryCode'})
+        }
+      })
+  }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -283,7 +291,7 @@ authRouter.post('/new-password',
       return res.status(400).json({errorsMessages})
     }
 
-    const result = await jwtService.verifyUserByToken(req.cookies.refreshToken, settings.JWT_SECRET_REFRESH)
+    const result = await jwtService.verifyUserByToken(req.body.recoveryCode, settings.JWT_SECRET_PASSWORD_RECOVERY)
 
     if (!result) return res.sendStatus(400)
 

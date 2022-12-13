@@ -33,8 +33,8 @@ export const usersService = {
 
     return newUser
   },
-  async updateUserPassword(userid: string, newPassword: string) {
+  async updateUserPassword(userId: string, newPassword: string) {
     const hash = await generateHash(10, newPassword)
-    await usersRepository.updatePassword(userid, hash)
+    await usersRepository.updatePassword(userId, hash)
   }
 }

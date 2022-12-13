@@ -38,8 +38,8 @@ export const usersRepository = {
       }
     })
   },
-  async updatePassword(userid: string, hash: string) {
-    await Users.updateOne({id: userid}, {$set: {'accountData.password': hash}})
+  async updatePassword(userId: string, hash: string) {
+    await Users.updateOne({id: userId}, {$set: {'accountData.password': hash}})
 
   },
   async deleteUser(userId: string) {

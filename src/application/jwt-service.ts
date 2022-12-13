@@ -17,6 +17,9 @@ export const jwtService = {
   async createJWTRefreshToken(userId: string, deviceId: string) {
     return jwt.sign({userId, deviceId}, settings.JWT_SECRET_REFRESH, {expiresIn: '1d'})
   },
+  async createJWTPasswordRecoveryToken(userId: string) {
+    return jwt.sign({userId}, settings.JWT_SECRET_PASSWORD_RECOVERY, {expiresIn: '1d'})
+  },
   async verifyUserByToken(token: string, secretKey: string): Promise<VerifiedUserByTokenResponse | null> {
     try {
       const result: any = await jwt.verify(token, secretKey)
