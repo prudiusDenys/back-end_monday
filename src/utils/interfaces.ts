@@ -38,11 +38,6 @@ export interface EmailConfirmationData {
   isConfirmed: boolean
 }
 
-export interface PasswordRecovery {
-  recoveryCode: string
-  expirationDate: number
-}
-
 export interface AuthDeviceSession {
   ip: string
   title: string
@@ -56,8 +51,7 @@ export interface AuthDeviceSession {
 export interface User {
   id: string,
   accountData: Account,
-  emailConfirmation: EmailConfirmationData,
-  passwordRecovery?: PasswordRecovery
+  emailConfirmation: EmailConfirmationData
 }
 
 // Query Params

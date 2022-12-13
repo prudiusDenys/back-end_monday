@@ -5,7 +5,6 @@ import {
   Blog,
   Comment,
   EmailConfirmationData,
-  PasswordRecovery,
   Post,
   User
 } from '../utils/interfaces';
@@ -21,10 +20,6 @@ const EmailConfirmation = new mongoose.Schema<EmailConfirmationData>({
   confirmationCode: {type: String, required: true},
   expirationDate: {type: Date, required: true},
   isConfirmed: {type: Boolean, required: true}
-})
-const PasswordRecovery = new mongoose.Schema<PasswordRecovery>({
-  recoveryCode: {type: String, required: true},
-  expirationDate: {type: Number, required: true}
 })
 
 export const BlogSchema: any = new mongoose.Schema<Blog>({
@@ -62,8 +57,7 @@ export const PostSchema = new mongoose.Schema<Post>({
 export const UserSchema = new mongoose.Schema<User>({
   id: {type: String, required: true},
   accountData: {type: AccountSchema, required: true},
-  emailConfirmation: {type: EmailConfirmation, required: true},
-  passwordRecovery: {type: PasswordRecovery}
+  emailConfirmation: {type: EmailConfirmation, required: true}
 })
 export const CommentSchema = new mongoose.Schema<Comment>({
   id: {type: String, required: true},
