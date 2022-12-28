@@ -8,10 +8,11 @@ export interface PostInputValue {
   blogId: string
 }
 
-export const postsRepository = {
+export class PostsRepository {
   async createPost(newPost: Post) {
     await Posts.create(newPost)
-  },
+  }
+
   async editPost(id: string, data: PostInputValue) {
     const res = await Posts.updateOne({id}, {
       $set: {
@@ -22,11 +23,13 @@ export const postsRepository = {
       }
     })
     return res.matchedCount
-  },
+  }
+
   async deletePost(id: string) {
     const res = await Posts.deleteOne({id})
     return res.deletedCount
-  },
+  }
+
   async createComment(comment: Comment) {
     await Comments.create(comment)
   }

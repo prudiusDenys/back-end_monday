@@ -2,7 +2,7 @@ import {Post, QueryParams} from '../../utils/interfaces';
 import {calcPagesCount, calcSkipPages} from '../../utils/calculatePagination';
 import {Comments, Posts} from '../../mongoose/models';
 
-export const postsRepositoryQuery = {
+export class PostsRepositoryQuery {
   async getAllPosts(data: QueryParams) {
     const {
       sortBy = 'createdAt',
@@ -28,10 +28,12 @@ export const postsRepositoryQuery = {
       items,
       pagesCount: calcPagesCount(totalCount, +pageSize)
     }
-  },
+  }
+
   async findPost(id: string): Promise<Post | null> {
     return Posts.findOne({id}).select('-__v -_id')
-  },
+  }
+
   async findAllCommentsForSpecificPost(data: QueryParams, postId: string) {
     const {
       sortBy = 'createdAt',

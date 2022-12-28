@@ -5,7 +5,7 @@ interface ReturnData {
   status: 404 | 403 | 204
 }
 
-export const commentsRepository = {
+class CommentsRepository {
   async updateComment(commentId: string, content: string, user: User): Promise<ReturnData> {
     const comment = await Comments.findOne({id: commentId}).select('-__v -_id')
 
@@ -15,7 +15,17 @@ export const commentsRepository = {
     await Comments.updateOne({id: commentId}, {$set: {content}})
 
     return {status: 204}
-  },
+  }
+
+  async updateLikeStatus(commentId: string, likeStatus: string): Promise<boolean> {
+    const comment = await Comments.findOne({id: commentId}).lean()
+
+    if (!comment) return false
+
+    const res = await Comments.updateOne({id: commentId}, {$set: {likeStatus}})
+    return !!res.matchedCount
+  }
+
   async deleteComment(commentId: string, user: User): Promise<ReturnData> {
     const comment = await Comments.findOne({id: commentId}).select('-__v -_id')
 
@@ -27,3 +37,5 @@ export const commentsRepository = {
     return {status: 204}
   }
 }
+
+export const commentsRepository = new CommentsRepository()

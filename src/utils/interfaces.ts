@@ -23,6 +23,7 @@ export interface Comment {
   userLogin: string
   createdAt: string
   parentId: string
+  likeStatus: 'None' | 'Like' | 'Dislike'
 }
 
 export interface Account {

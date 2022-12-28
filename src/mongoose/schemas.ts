@@ -65,7 +65,8 @@ export const CommentSchema = new mongoose.Schema<Comment>({
   userId: {type: String, required: true},
   userLogin: {type: String, required: true},
   createdAt: {type: String, required: true},
-  parentId: {type: String, required: true}
+  parentId: {type: String, required: true},
+  likeStatus: {type: String, required: true}
 })
 export const AuthDeviceSessionSchema = new mongoose.Schema<AuthDeviceSession>({
   ip: {type: String, required: true},

@@ -38,6 +38,34 @@ commentsRouter.put('/:commentId', authMiddlewareBearer,
     }
   })
 
+commentsRouter.put('/:commentId/like-status',
+  authMiddlewareBearer,
+  body('likeStatus').custom((value) => {
+    const validValues = ['None', 'Like', 'Dislike']
+
+    if (!validValues.includes(value)) {
+      return Promise.reject({message: 'likeStatus is incorrect', field: 'likeStatus'})
+    } else {
+      return true
+    }
+  }),
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const errorsMessages = errors.array().map(error => error.msg)
+      return res.status(400).json({errorsMessages})
+    }
+
+    const result = await commentsRepository.updateLikeStatus(req.params.commentId, req.body.likeStatus)
+
+    if (result) {
+      return res.sendStatus(204)
+    } else {
+      return res.sendStatus(404)
+    }
+  })
+
 commentsRouter.delete('/:commentId', authMiddlewareBearer, async (req: Request, res: Response) => {
   const result = await commentsRepository.deleteComment(req.params.commentId, req.user)
 
