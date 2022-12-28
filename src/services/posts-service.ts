@@ -88,6 +88,9 @@ export class PostsService {
 
     await this.postsRepository.createComment({...comment})
 
-    return comment
+    const returnedComment: any = {...comment}
+    delete returnedComment.likeStatus
+
+    return returnedComment
   }
 }
