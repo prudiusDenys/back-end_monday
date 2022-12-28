@@ -22,11 +22,14 @@ class CommentsRepository {
 
     if (!comment) return false
 
+    const likeCounts = comment.likesInfo.likesCount + 1
+    const dislikeCounts = likeStatus === 'Dislike' ? comment.likesInfo.dislikesCount + 1 : comment.likesInfo.dislikesCount
+
     const res = await Comments.updateOne({id: commentId}, {
       $set: {
         'likesInfo.myStatus': likeStatus,
-        'likesInfo.likesCount': comment.likesInfo.likesCount + 1,
-        'likesInfo.dislikesCount': likeStatus === 'Dislike' ? comment.likesInfo.dislikesCount + 1 : comment.likesInfo.dislikesCount
+        'likesInfo.likesCount': likeCounts,
+        'likesInfo.dislikesCount': dislikeCounts
       }
     })
     return !!res.matchedCount
