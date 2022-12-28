@@ -3,7 +3,7 @@ import {authMiddleware} from '../middlewares/authMiddleware';
 import {normalizeAllBlogsAndPosts, removeMongoId} from '../utils/normalizeData';
 import {blogsService} from '../services/blogs-service';
 import {blogsRepositoryQuery} from '../repositories/blogs-repository/blogs-repositoryQuery';
-import {postsService} from '../services/posts-service';
+import {PostsService} from '../services/posts-service';
 import {BlogsQueryParams} from '../utils/interfaces';
 
 export const bloggersRouter = Router({})
@@ -48,6 +48,7 @@ bloggersRouter.post('/', authMiddleware, async (req: Request, res: Response) => 
 })
 
 bloggersRouter.post('/:blogId/posts', authMiddleware, async (req: Request, res: Response) => {
+  const postsService = new PostsService()
   const data: any = await postsService.createPost(req.body, req.params.blogId)
 
   if (data?.value) {

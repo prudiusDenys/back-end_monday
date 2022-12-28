@@ -104,11 +104,11 @@ class PostsController {
 
 const postsController = new PostsController()
 
-usersRouter.get('/', postsController.getAllPosts.bind(postsController))
-usersRouter.get('/:id', postsController.getPost.bind(postsController))
-usersRouter.get('/:postId/comments', postsController.findAllCommentsForSpecificPost.bind(postsController))
+postsRouter.get('/', postsController.getAllPosts.bind(postsController))
+postsRouter.get('/:id', postsController.getPost.bind(postsController))
+postsRouter.get('/:postId/comments', postsController.findAllCommentsForSpecificPost.bind(postsController))
 
-usersRouter.post('/', authMiddleware, postsController.createPost.bind(postsController))
+postsRouter.post('/', authMiddleware, postsController.createPost.bind(postsController))
 postsRouter.post('/:postId/comments', body('content').isString().trim().isLength({min: 20, max: 300})
     .withMessage({message: 'content is incorrect', field: 'content'}),
   authMiddlewareBearer,
