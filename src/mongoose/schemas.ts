@@ -6,7 +6,8 @@ import {
   Comment,
   EmailConfirmationData,
   Post,
-  User
+  User,
+  LikesInfo
 } from '../utils/interfaces';
 import {Blogs} from './models';
 
@@ -21,6 +22,12 @@ const EmailConfirmation = new mongoose.Schema<EmailConfirmationData>({
   expirationDate: {type: Date, required: true},
   isConfirmed: {type: Boolean, required: true}
 })
+
+const LikesInfo = new mongoose.Schema<LikesInfo>({
+  likesCount: {type: Number, required: true},
+  dislikesCount: {type: Number, required: true},
+  myStatus: {type: String, required: true},
+}, {_id: false})
 
 export const BlogSchema: any = new mongoose.Schema<Blog>({
   id: {type: String, required: true},
@@ -66,7 +73,7 @@ export const CommentSchema = new mongoose.Schema<Comment>({
   userLogin: {type: String, required: true},
   createdAt: {type: String, required: true},
   parentId: {type: String, required: true},
-  likeStatus: {type: String, required: true}
+  likesInfo: {type: LikesInfo, required: true}
 })
 export const AuthDeviceSessionSchema = new mongoose.Schema<AuthDeviceSession>({
   ip: {type: String, required: true},

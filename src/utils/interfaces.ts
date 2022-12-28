@@ -1,3 +1,9 @@
+export interface LikesInfo {
+  likesCount: number
+  dislikesCount: number
+  myStatus: 'None' | 'Like' | 'Dislike'
+}
+
 export interface Blog {
   id: string
   name: string
@@ -23,7 +29,7 @@ export interface Comment {
   userLogin: string
   createdAt: string
   parentId: string
-  likeStatus: 'None' | 'Like' | 'Dislike'
+  likesInfo: LikesInfo
 }
 
 export interface Account {

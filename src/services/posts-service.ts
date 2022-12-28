@@ -83,14 +83,15 @@ export class PostsService {
       userLogin: user.accountData.login,
       createdAt: new Date().toISOString(),
       parentId: post.id,
-      likeStatus: 'None'
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: 'None'
+      }
     }
 
     await this.postsRepository.createComment({...comment})
 
-    const returnedComment: any = {...comment}
-    delete returnedComment.likeStatus
-
-    return returnedComment
+    return comment
   }
 }
