@@ -12,7 +12,7 @@ class LikesRepository {
       }
     }, {upsert: true})
 
-    return true
+    return res.acknowledged
   }
 }
 
