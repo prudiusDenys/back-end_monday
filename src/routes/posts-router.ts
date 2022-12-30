@@ -6,7 +6,6 @@ import {PostsService} from '../services/posts-service';
 import {QueryParams} from '../utils/interfaces';
 import {authMiddlewareBearer} from '../middlewares/authMiddlewareBearer';
 import {body, validationResult} from 'express-validator';
-import {usersRouter} from './users-router';
 
 export const postsRouter = Router({})
 
