@@ -6,13 +6,10 @@ import {Comment, Post, User} from '../utils/interfaces';
 import {Posts} from '../mongoose/models';
 
 export class PostsService {
-  postsRepository: PostsRepository
-  postsRepositoryQuery: PostsRepositoryQuery
-
-  constructor() {
-    this.postsRepository = new PostsRepository()
-    this.postsRepositoryQuery = new PostsRepositoryQuery()
-  }
+  constructor(
+    protected postsRepository: PostsRepository,
+    protected postsRepositoryQuery: PostsRepositoryQuery
+  ) {}
 
   async createPost(data: PostInputValue, blogId: string) {
     const errorMessage = handlePostsErrors(data)

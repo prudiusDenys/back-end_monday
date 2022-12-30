@@ -1,7 +1,7 @@
 import {videos} from '../routes/video-router';
 import {AuthDevicesSessions, Blogs, Comments, Likes, Posts, Users} from '../mongoose/models';
 
-export const testingRepository = {
+export class RemovingAllRepository {
   async removeAllData() {
     videos.splice(0, videos.length)
     await Posts.deleteMany({})

@@ -1,6 +1,6 @@
 import {Comments, Likes} from '../../mongoose/models';
 
-class LikesRepository {
+export class LikesRepository {
   async updateLikeStatus(userId: string, commentId: string, likeStatus: string): Promise<boolean> {
     const comment = await Comments.findOne({id: commentId}).lean()
 
@@ -15,5 +15,3 @@ class LikesRepository {
     return res.acknowledged
   }
 }
-
-export const likesRepository = new LikesRepository()

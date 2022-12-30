@@ -1,7 +1,7 @@
 import {Likes} from '../../mongoose/models';
 
 
-class LikesRepositoryQuery {
+export class LikesRepositoryQuery {
   async getLikesCount(commentId: string) {
     return Likes.countDocuments({myStatus: 'Like', parentId: commentId})
   }
@@ -19,5 +19,3 @@ class LikesRepositoryQuery {
     }
   }
 }
-
-export const likesRepositoryQuery = new LikesRepositoryQuery()
