@@ -25,11 +25,11 @@ commentsRouter.get('/:id', async (req: Request, res: Response) => {
 
   const mappedComment = {
     ...comment,
-    // likesInfo: {
-    //   likesCount,
-    //   dislikesCount,
-    //   myStatus
-    // }
+    likesInfo: {
+      likesCount,
+      dislikesCount,
+      myStatus
+    }
   }
 
   if (comment) {
