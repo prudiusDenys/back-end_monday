@@ -82,12 +82,7 @@ export class PostsService {
       userId: user.id,
       userLogin: user.accountData.login,
       createdAt: new Date().toISOString(),
-      parentId: post.id,
-      likesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: 'None'
-      }
+      parentId: post.id
     }
 
     await this.postsRepository.createComment({...comment})

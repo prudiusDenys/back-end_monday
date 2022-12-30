@@ -140,7 +140,7 @@ authRouter.post('/logout',
     if (userId) {
       await sessionsService.setExpiredToken(userId, deviceId, req.cookies.refreshToken)
       await sessionsService.removeSession(deviceId)
-      // res.clearCookie('refreshToken')
+      res.clearCookie('refreshToken')
       res.sendStatus(204)
     } else {
       res.sendStatus(401)

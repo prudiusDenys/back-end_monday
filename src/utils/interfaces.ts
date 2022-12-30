@@ -1,6 +1,6 @@
-export interface LikesInfo {
-  likesCount: number
-  dislikesCount: number
+export interface Likes {
+  parentId: string //commentID
+  userId: string // user who set like
   myStatus: 'None' | 'Like' | 'Dislike'
 }
 
@@ -29,7 +29,6 @@ export interface Comment {
   userLogin: string
   createdAt: string
   parentId: string
-  likesInfo: LikesInfo
 }
 
 export interface Account {

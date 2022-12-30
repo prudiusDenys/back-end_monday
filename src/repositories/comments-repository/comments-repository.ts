@@ -1,5 +1,5 @@
 import {User} from '../../utils/interfaces';
-import {Comments} from '../../mongoose/models';
+import {Comments, Likes} from '../../mongoose/models';
 
 interface ReturnData {
   status: 404 | 403 | 204
@@ -15,24 +15,6 @@ class CommentsRepository {
     await Comments.updateOne({id: commentId}, {$set: {content}})
 
     return {status: 204}
-  }
-
-  async updateLikeStatus(commentId: string, likeStatus: string): Promise<boolean> {
-    const comment = await Comments.findOne({id: commentId}).lean()
-
-    if (!comment) return false
-
-    const likeCounts = comment.likesInfo.likesCount + 1
-    const dislikeCounts = likeStatus === 'Dislike' ? comment.likesInfo.dislikesCount + 1 : comment.likesInfo.dislikesCount
-
-    const res = await Comments.updateOne({id: commentId}, {
-      $set: {
-        'likesInfo.myStatus': likeStatus,
-        'likesInfo.likesCount': likeCounts,
-        'likesInfo.dislikesCount': dislikeCounts
-      }
-    })
-    return !!res.matchedCount
   }
 
   async deleteComment(commentId: string, user: User): Promise<ReturnData> {
