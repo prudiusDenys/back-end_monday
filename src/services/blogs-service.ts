@@ -1,7 +1,6 @@
 import {Blog} from '../utils/interfaces';
 import {handleBloggersErrors} from '../utils/handleErrors';
 import {Blogs} from '../mongoose/models';
-import {log} from 'util';
 
 const blog = new Blogs()
 
@@ -24,7 +23,6 @@ export const blogsService = {
     }
 
     await blog.createBlogger(newUser)
-    //await blog.save() app is crashed
 
     return {value: newUser}
   },
@@ -45,9 +43,6 @@ export const blogsService = {
     }
   },
   async deleteBlogger(id: string) {
-
-
-
     const res = await blog.deleteBlogger(id)
     await blog.save()
     return res > 0;
